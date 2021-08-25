@@ -7,7 +7,8 @@ class DBConfig(object):
     password = r'humanuser'
     database = r'humanmanage'
     host = '127.0.0.1'
-    port = '5432'
+    # port = '5432'
+    port = '35432'
 
     # 数据库url
     SQLALCHEMY_DATABASE_URI = f'{db_type}://{user}:{password}@{host}:{port}/{database}'

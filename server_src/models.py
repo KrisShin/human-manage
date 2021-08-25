@@ -1,12 +1,17 @@
-from datetime import datetime, timedelta
-from threading import Thread
-import json
 from config.global_params import db
+from datetime import datetime
 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
-    name = db.Column(db.String(200))
+    name = db.Column(db.String(64))
+    email = db.Column(db.String(512))
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, onupdate=datetime.now)
+    password = db.Column(db.String(1024))
+    position = db.Column(db.String(512))
+    office = db.Column(db.String(512))
+    salary = db.Column(db.Float())
 
 
 # rs_library_questnar = db.Table(
