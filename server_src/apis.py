@@ -65,6 +65,7 @@ def api_user_options():
         office = data.get('office')
         salary = data.get('salary')
         status = data.get('status')
+        department_id = data.get('department_id')
 
         if name:
             user.name = name
@@ -80,6 +81,8 @@ def api_user_options():
             user.salary = salary
         if status:
             user.status = status
+        if department_id:
+            user.department_id = department_id
 
         db.session.commit()
         return jsonify({'code': status_code.OK})
@@ -101,7 +104,7 @@ def api_menu_list():
     return jsonify({'code': status_code.OK, 'data': menu_list})
 
 
-@apis.route('/login/', methods=['POST'])
+@apis.route('/user/login/', methods=['POST'])
 def api_user_login():
     data = request.get_json()
     email = data.get('email')
@@ -114,4 +117,38 @@ def api_user_login():
     if password != user.password:
         return jsonify({'code': status_code.USER_WRONG_PASSWORD, 'msg': '密码错误'})
 
-    return jsonify({'code': status_code, 'data': dict(user)})
+    return jsonify({'code': status_code.OK, 'data': dict(user)})
+
+
+@apis.route('/user/mock/', methods=['GET'])
+def mock_users():
+    import random
+    import string
+
+    for _ in range(10):
+        user = User()
+        user.name = ''.join(
+            random.choices(string.ascii_letters, k=random.randint(5, 10))
+        )
+        user.email = (
+            ''.join(random.choices(string.ascii_letters, k=random.randint(5, 10)))
+            + '@'
+            + ''.join(random.choices(string.ascii_letters, k=random.randint(5, 10)))
+            + '.com'
+        )
+        user.password = "password"
+        user.position = ''.join(
+            random.choices(string.ascii_letters, k=random.randint(5, 10))
+        )
+        user.office = ''.join(
+            random.choices(string.ascii_letters, k=random.randint(5, 10))
+        )
+        user.salary = random.randint(2000, 200000)
+        user.status = ''.join(
+            random.choices(string.ascii_letters, k=random.randint(5, 10))
+        )
+        user.department_id = random.choice((1, 2, 3, 4, 5, 6, 7, 8))
+
+        db.session.add(user)
+        db.session.commit()
+    return jsonify({'code': status_code.OK})
