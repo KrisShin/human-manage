@@ -1,6 +1,7 @@
-from server_src.models import User
+from server_src.models import Menu, User
 from flask import Blueprint, jsonify, request
 from config import status_code
+from config.global_params import db
 
 apis = Blueprint('apis', __name__, url_prefix='/api')
 
@@ -11,7 +12,7 @@ apis = Blueprint('apis', __name__, url_prefix='/api')
 
 
 @apis.route('/user/list/', methods=['GET'])
-def users_list():
+def api_user_list():
     data = request.args
     page = int(data.get('page', 1) or 1)
     page_size = int(data.get('pageSize', 10) or 10)
@@ -30,9 +31,71 @@ def users_list():
 
 
 @apis.route('/user/', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def user_options():
+def api_user_options():
     if request.method == 'GET':
         data = request.args
         user_id = data.get('id')
         user = User.query.filter_by(id=user_id).first()
         return jsonify({'code': status_code.OK, 'data': dict(user)})
+    elif request.method == 'POST':
+        data = request.get_json()
+
+        user = User()
+        user.name = data.get('name')
+        user.email = data.get('email')
+        user.password = data.get('password')
+        user.position = data.get('position')
+        user.office = data.get('office')
+        user.salary = data.get('salary')
+        user.status = data.get('status')
+
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({'code': status_code.OK, 'data': dict(user)})
+    elif request.method == 'PUT':
+        data = request.get_json()
+        user_id = data.get('id')
+
+        user = User.query.filter_by(id=user_id).first()
+        user.name = data.get('name')
+        user.email = data.get('email')
+        user.password = data.get('password')
+        user.position = data.get('position')
+        user.office = data.get('office')
+        user.salary = data.get('salary')
+        user.status = data.get('status')
+
+        db.session.commit()
+        return jsonify({'code': status_code.OK})
+    elif request.method == 'DELETE':
+        data = request.get_json()
+        user_id = data.get('id')
+
+        user = User.query.filter_by(id=user_id).first()
+        user.delete()
+
+        db.session.commit()
+        return jsonify({'code': status_code.OK})
+
+
+@apis.route('/menu/list', methods=['GET'])
+def api_menu_list():
+    menu_list = Menu.query.all()
+    menu_list = [dict(menu) for menu in menu_list]
+    return jsonify({'code': status_code.OK, 'data': menu_list})
+
+
+@apis.route('/login', methods=['POST'])
+def api_user_login():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'code': status_code.USER_NOT_EXIST, 'msg': '用户不存在'})
+
+    if password != user.password:
+        return jsonify({'code': status_code.USER_WRONG_PASSWORD, 'msg': '密码错误'})
+
+    return jsonify({'code': status_code, 'data': dict(user)})

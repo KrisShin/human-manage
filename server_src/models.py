@@ -1,14 +1,23 @@
 from config.global_params import db
 from datetime import datetime
 
+
 class Department(db.Model):
-    __tablename__='tb_department'
+    __tablename__ = 'tb_department'
 
     id = db.Column(db.Integer, primary_key=True, index=True)
     name = db.Column(db.String(64))
+    employees = db.relationship(
+        "User",
+        backref="department",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        lazy=True,
+    )
+
 
 class Menu(db.Model):
-    __tablename__='tb_menu'
+    __tablename__ = 'tb_menu'
 
     id = db.Column(db.Integer, primary_key=True, index=True)
     name = db.Column(db.String(64))
@@ -18,6 +27,7 @@ class Menu(db.Model):
 
 class User(db.Model):
     __tablename__ = 'tb_users'
+
     id = db.Column(db.Integer, primary_key=True, index=True)
     name = db.Column(db.String(64))
     email = db.Column(db.String(512))
@@ -28,7 +38,14 @@ class User(db.Model):
     status = db.Column(db.String(64))
     office = db.Column(db.String(512))
     salary = db.Column(db.Float())
+    department_id = db.Column(
+        db.Integer, db.ForeignKey("tb_department.id", ondelete="CASCADE"), index=True
+    )
 
+    def __getitem__(self, item):
+        if item in ('create_time', 'update_time'):
+            return str(getattr(self, item))
+        return getattr(self, item)
 
 
 # rs_library_questnar = db.Table(
