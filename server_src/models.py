@@ -1,6 +1,20 @@
 from config.global_params import db
 from datetime import datetime
 
+class Department(db.Model):
+    __tablename__='tb_department'
+
+    id = db.Column(db.Integer, primary_key=True, index=True)
+    name = db.Column(db.String(64))
+
+class Menu(db.Model):
+    __tablename__='tb_menu'
+
+    id = db.Column(db.Integer, primary_key=True, index=True)
+    name = db.Column(db.String(64))
+    level = db.Column(db.Integer, default=0)
+    parent = db.Column(db.Integer)
+
 
 class User(db.Model):
     __tablename__ = 'tb_users'
@@ -11,8 +25,10 @@ class User(db.Model):
     update_time = db.Column(db.DateTime, onupdate=datetime.now)
     password = db.Column(db.String(1024))
     position = db.Column(db.String(512))
+    status = db.Column(db.String(64))
     office = db.Column(db.String(512))
     salary = db.Column(db.Float())
+
 
 
 # rs_library_questnar = db.Table(

@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-from server_src.apis import user
+from server_src.apis import apis
 
 from .db_config import DBConfig
 from .global_params import db
@@ -28,4 +28,4 @@ def create_app():
 
 def register_blueprint(app):
     '''Register all the blueprints from apps.'''
-    app.register_blueprint(user)
+    app.register_blueprint(apis)
