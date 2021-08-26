@@ -99,9 +99,17 @@ def api_user_options():
 
 @apis.route('/menu/list/', methods=['GET'])
 def api_menu_list():
-    menu_list = Menu.query.all()
-    menu_list = [dict(menu) for menu in menu_list]
-    return jsonify({'code': status_code.OK, 'data': menu_list})
+    menu_list = Menu.query.order_by(Menu.level).all()
+    
+    resp = {}
+    menus = {}
+    for menu in menu_list:
+        menus[menu.id]=menu
+        if menu.level == 0:
+            resp[menu.name]=[]
+        elif menu.level == 1:
+            resp[menus[menu.parent].name].append(menu.name)
+    return jsonify({'code': status_code.OK, 'data': resp})
 
 
 @apis.route('/user/login/', methods=['POST'])
