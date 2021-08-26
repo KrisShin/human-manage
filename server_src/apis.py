@@ -43,11 +43,12 @@ def api_user_options():
         user = User()
         user.name = data.get('name')
         user.email = data.get('email')
-        user.password = data.get('password')
+        user.password = "password"
         user.position = data.get('position')
         user.office = data.get('office')
         user.salary = data.get('salary')
         user.status = data.get('status')
+        user.department_id = data.get('department_id')
 
         db.session.add(user)
         db.session.commit()
@@ -57,13 +58,28 @@ def api_user_options():
         user_id = data.get('id')
 
         user = User.query.filter_by(id=user_id).first()
-        user.name = data.get('name')
-        user.email = data.get('email')
-        user.password = data.get('password')
-        user.position = data.get('position')
-        user.office = data.get('office')
-        user.salary = data.get('salary')
-        user.status = data.get('status')
+        name = data.get('name')
+        email = data.get('email')
+        password = data.get('password')
+        position = data.get('position')
+        office = data.get('office')
+        salary = data.get('salary')
+        status = data.get('status')
+
+        if name:
+            user.name = name
+        if email:
+            user.email = email
+        if password:
+            user.password = password
+        if position:
+            user.position = position
+        if office:
+            user.office = office
+        if salary:
+            user.salary = salary
+        if status:
+            user.status = status
 
         db.session.commit()
         return jsonify({'code': status_code.OK})
@@ -78,14 +94,14 @@ def api_user_options():
         return jsonify({'code': status_code.OK})
 
 
-@apis.route('/menu/list', methods=['GET'])
+@apis.route('/menu/list/', methods=['GET'])
 def api_menu_list():
     menu_list = Menu.query.all()
     menu_list = [dict(menu) for menu in menu_list]
     return jsonify({'code': status_code.OK, 'data': menu_list})
 
 
-@apis.route('/login', methods=['POST'])
+@apis.route('/login/', methods=['POST'])
 def api_user_login():
     data = request.get_json()
     email = data.get('email')

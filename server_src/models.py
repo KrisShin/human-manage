@@ -24,6 +24,12 @@ class Menu(db.Model):
     level = db.Column(db.Integer, default=0)
     parent = db.Column(db.Integer)
 
+    def keys(self):
+        return ('id', 'name', 'level', 'parent')
+
+    def __getitem__(self, item):
+        return getattr(self, item)
+
 
 class User(db.Model):
     __tablename__ = 'tb_users'
@@ -42,9 +48,28 @@ class User(db.Model):
         db.Integer, db.ForeignKey("tb_department.id", ondelete="CASCADE"), index=True
     )
 
+    def keys(self):
+        return (
+            'id',
+            'name',
+            'email',
+            'create_time',
+            'update_time',
+            'position',
+            'status',
+            'office',
+            'salary',
+            'department_id',
+            'department',
+        )
+
     def __getitem__(self, item):
         if item in ('create_time', 'update_time'):
             return str(getattr(self, item))
+        elif item == 'department':
+            if self.department:
+                return self.department.name
+            return
         return getattr(self, item)
 
 
