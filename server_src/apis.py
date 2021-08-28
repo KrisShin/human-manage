@@ -26,11 +26,11 @@ def api_user_list():
     if name:
         user_list = user_list.filter_by(name=name)
     if status:
-        user_list = user_list.filter_by(status=status)
+        user_list = user_list.filter(User.status.in_(status))
     if gender is not None:
         user_list = user_list.filter_by(gender=gender)
     if department_id:
-        user_list = user_list.filter_by(department_id=department_id)
+        user_list = user_list.filter_by(department_id=int(department_id))
     if start_time and end_time:
         user_list = user_list.filter(
             User.create_time >= datetime.strptime(start_time, "%Y-%m-%d"),
