@@ -10,7 +10,7 @@ STATIC_PATH = '/static'
 # upload file absolute directory
 # UPLOAD_DIR = os.path.join(BASE_DIR, 'static', 'upload')
 
-SALT = r'iuhbw2!@5&ghemj><apk'
+SALT = r'iw2!@5&mj><ak'
 KEY = r'908&#af43$13t4djhaksf;'
 
 HTTP_NAME = socket.gethostname()

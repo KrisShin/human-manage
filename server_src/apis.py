@@ -1,14 +1,10 @@
-from server_src.models import Menu, User
+from utils.util import make_password
+from server_src.models import Department, Menu, User
 from flask import Blueprint, jsonify, request
 from config import status_code
 from config.global_params import db
 
 apis = Blueprint('apis', __name__, url_prefix='/api')
-
-
-# @user.route('/', methods=['GET'])
-# def test():
-#     return jsonify({'code': 200, 'msg': 'OK'})
 
 
 @apis.route('/user/list/', methods=['GET'])
@@ -43,7 +39,7 @@ def api_user_options():
         user = User()
         user.name = data.get('name')
         user.email = data.get('email')
-        user.password = "password"
+        user.password = make_password(data.get('password'))
         user.position = data.get('position')
         user.office = data.get('office')
         user.salary = data.get('salary')
@@ -60,7 +56,7 @@ def api_user_options():
         user = User.query.filter_by(id=user_id).first()
         name = data.get('name')
         email = data.get('email')
-        password = data.get('password')
+        password = make_password(data.get('password'))
         position = data.get('position')
         office = data.get('office')
         salary = data.get('salary')
@@ -100,13 +96,13 @@ def api_user_options():
 @apis.route('/menu/list/', methods=['GET'])
 def api_menu_list():
     menu_list = Menu.query.order_by(Menu.level).all()
-    
+
     resp = {}
     menus = {}
     for menu in menu_list:
-        menus[menu.id]=menu
+        menus[menu.id] = menu
         if menu.level == 0:
-            resp[menu.name]=[]
+            resp[menu.name] = []
         elif menu.level == 1:
             resp[menus[menu.parent].name].append(menu.name)
     return jsonify({'code': status_code.OK, 'data': resp})
@@ -126,6 +122,14 @@ def api_user_login():
         return jsonify({'code': status_code.USER_WRONG_PASSWORD, 'msg': '密码错误'})
 
     return jsonify({'code': status_code.OK, 'data': dict(user)})
+
+
+@apis.route('/department/list/', methods=['GET'])
+def api_department_list():
+    dp_list = Department.query.all()
+
+    resp = [dict(dp) for dp in dp_list]
+    return jsonify({'code': status_code.OK, 'data': resp})
 
 
 @apis.route('/user/mock/', methods=['GET'])

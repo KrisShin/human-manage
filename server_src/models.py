@@ -15,6 +15,12 @@ class Department(db.Model):
         lazy=True,
     )
 
+    def keys(self):
+        return ('id', 'name')
+
+    def __getitem__(self, item):
+        return getattr(self, item)
+
 
 class Menu(db.Model):
     __tablename__ = 'tb_menu'
