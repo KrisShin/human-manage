@@ -33,8 +33,8 @@ def api_user_list():
         user_list = user_list.filter_by(department_id=department_id)
     if start_time and end_time:
         user_list = user_list.filter(
-            User.create_time > datetime.strptime(start_time, "%Y-%m-%d"),
-            User.create_time < datetime.strptime(end_time, "%Y-%m-%d"),
+            User.create_time >= datetime.strptime(start_time, "%Y-%m-%d"),
+            User.create_time <= datetime.strptime(end_time, "%Y-%m-%d"),
         )
     total = user_list.count()
     user_list = [dict(user) for user in user_list.paginate(page, page_size).items]
