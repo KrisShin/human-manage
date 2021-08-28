@@ -19,8 +19,9 @@ def api_user_list():
     name = data.get('name')
     department_id = data.get('department_id')
     status = json.loads(data.get('status', '[]') or '[]')
-    gender = int(data.get('gender', 0) or 0)
-    start_times = data.get('start_time')
+    gender = data.get('gender')
+    start_time = data.get('start_time')
+    end_time = data.get('end_time')
 
     if name:
         user_list = user_list.filter_by(name=name)
@@ -30,11 +31,10 @@ def api_user_list():
         user_list = user_list.filter_by(gender=gender)
     if department_id:
         user_list = user_list.filter_by(department_id=department_id)
-    if start_times:
-        times = start_times.split('-')
-        user_list = user_list.fiter(
-            User.create_time < datetime.strptime(times[0], "%Y-%m-%d"),
-            User.create_time < datetime.strptime(times[1], "%Y-%m-%d"),
+    if start_time and end_time:
+        user_list = user_list.filter(
+            User.create_time > datetime.strptime(start_time, "%Y-%m-%d"),
+            User.create_time < datetime.strptime(end_time, "%Y-%m-%d"),
         )
     total = user_list.count()
     user_list = [dict(user) for user in user_list.paginate(page, page_size).items]
