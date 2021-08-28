@@ -3,6 +3,8 @@ from server_src.models import Department, Menu, User
 from flask import Blueprint, jsonify, request
 from config import status_code
 from config.global_params import db
+import json
+from datetime import datetime
 
 apis = Blueprint('apis', __name__, url_prefix='/api')
 
@@ -13,6 +15,27 @@ def api_user_list():
     page = int(data.get('page', 1) or 1)
     page_size = int(data.get('pageSize', 10) or 10)
     user_list = User.query
+
+    name = data.get('name')
+    department_id = data.get('department_id')
+    status = json.loads(data.get('status', '[]') or '[]')
+    gender = int(data.get('gender', 0) or 0)
+    start_times = data.get('start_time')
+
+    if name:
+        user_list = user_list.filter_by(name=name)
+    if status:
+        user_list = user_list.filter_by(status=status)
+    if gender is not None:
+        user_list = user_list.filter_by(gender=gender)
+    if department_id:
+        user_list = user_list.filter_by(department_id=department_id)
+    if start_times:
+        times = start_times.split('-')
+        user_list = user_list.fiter(
+            User.create_time < datetime.strptime(times[0], "%Y-%m-%d"),
+            User.create_time < datetime.strptime(times[1], "%Y-%m-%d"),
+        )
     total = user_list.count()
     user_list = [dict(user) for user in user_list.paginate(page, page_size).items]
     return jsonify(
@@ -43,6 +66,7 @@ def api_user_options():
         user.position = data.get('position')
         user.office = data.get('office')
         user.salary = data.get('salary')
+        user.gender = data.get('gender')
         user.status = data.get('status')
         user.department_id = data.get('department_id')
 
@@ -61,6 +85,7 @@ def api_user_options():
         office = data.get('office')
         salary = data.get('salary')
         status = data.get('status')
+        gender = int(data.get('gender', 0) or 0)
         department_id = data.get('department_id')
 
         if name:
@@ -77,6 +102,8 @@ def api_user_options():
             user.salary = salary
         if status:
             user.status = status
+        if gender is not None:
+            user.gender = gender
         if department_id:
             user.department_id = department_id
 

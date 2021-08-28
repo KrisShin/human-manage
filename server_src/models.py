@@ -43,6 +43,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
     name = db.Column(db.String(64))
     email = db.Column(db.String(512))
+    gender = db.Column(db.Integer, nullable=True)
     create_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(db.DateTime, onupdate=datetime.now)
     password = db.Column(db.String(1024))
