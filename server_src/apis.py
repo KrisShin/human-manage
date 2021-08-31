@@ -3,25 +3,23 @@ from server_src.models import Department, Menu, User
 from flask import Blueprint, jsonify, request
 from config import status_code
 from config.global_params import db
-import json
 from datetime import datetime
 
 apis = Blueprint('apis', __name__, url_prefix='/api')
 
 
-@apis.route('/user/list/', methods=['GET'])
+@apis.route('/user/list/', methods=['POST'])
 def api_user_list():
-    data = request.args
-    page = int(data.get('page', 1) or 1)
-    page_size = int(data.get('pageSize', 10) or 10)
+    data = request.get_json()
+    page = data.get('page', 1)
+    page_size = data.get('pageSize', 10)
     user_list = User.query.order_by(User.create_time.desc())
 
     name = data.get('name')
     department_id = data.get('department_id')
-    status = json.loads(data.get('status', '[]') or '[]')
+    status = data.get('status', '[]')
     gender = data.get('gender')
-    start_time = data.get('start_time')
-    end_time = data.get('end_time')
+    start_time = data.get('create_time')
 
     if name:
         user_list = user_list.filter_by(name=name)
@@ -31,10 +29,9 @@ def api_user_list():
         user_list = user_list.filter_by(gender=gender)
     if department_id:
         user_list = user_list.filter_by(department_id=int(department_id))
-    if start_time and end_time:
+    if start_time:
         user_list = user_list.filter(
-            User.create_time >= datetime.strptime(start_time, "%Y-%m-%d"),
-            User.create_time <= datetime.strptime(end_time, "%Y-%m-%d"),
+            User.create_time >= datetime.strptime(start_time, "%Y-%m-%d")
         )
     total = user_list.count()
     user_list = [dict(user) for user in user_list.paginate(page, page_size).items]
@@ -141,10 +138,7 @@ def api_menu_list():
             menus[menu.id] = line
         elif menu.level == 1:
             line = menus[menu.parent]
-            subline = {
-                'title': menu.name,
-                'path': menu.path
-            }
+            subline = {'title': menu.name, 'path': menu.path}
             line['children'].append(subline)
     return jsonify({'code': status_code.OK, 'data': resp})
 
