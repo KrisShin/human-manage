@@ -67,6 +67,7 @@ class User(db.Model):
             'position',
             'status',
             'office',
+            'gender',
             'salary',
             'department_id',
             'department',
