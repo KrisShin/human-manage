@@ -87,7 +87,7 @@ def api_user_options():
         office = data.get('office')
         salary = data.get('salary')
         status = data.get('status')
-        gender = int(data.get('gender', 0) or 0)
+        gender = data.get('gender')
         department_id = data.get('department_id')
 
         if name:
