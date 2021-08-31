@@ -80,7 +80,9 @@ def api_user_options():
         user = User.query.filter_by(id=user_id).first()
         name = data.get('name')
         email = data.get('email')
-        password = make_password(data.get('password'))
+        password = data.get('password')
+        if password:
+            password = make_password(password)
         position = data.get('position')
         office = data.get('office')
         salary = data.get('salary')
