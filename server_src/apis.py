@@ -116,8 +116,7 @@ def api_user_options():
         user_id = data.get('id')
 
         user = User.query.filter_by(id=user_id).first()
-        user.delete()
-
+        db.session.delete(user)
         db.session.commit()
         return jsonify({'code': status_code.OK})
 
