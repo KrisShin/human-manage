@@ -129,14 +129,23 @@ def api_user_options():
 def api_menu_list():
     menu_list = Menu.query.order_by(Menu.level).all()
 
-    resp = {}
+    resp = []
     menus = {}
     for menu in menu_list:
-        menus[menu.id] = menu
+        line = {}
         if menu.level == 0:
-            resp[menu.name] = []
+            line['title'] = menu.name
+            line['path'] = menu.path
+            line['children'] = []
+            resp.append(line)
+            menus[menu.id] = line
         elif menu.level == 1:
-            resp[menus[menu.parent].name].append(menu.name)
+            line = menus[menu.parent]
+            subline = {
+                'title': menu.name,
+                'path': menu.path
+            }
+            line['children'].append(subline)
     return jsonify({'code': status_code.OK, 'data': resp})
 
 

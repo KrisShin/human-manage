@@ -27,11 +27,12 @@ class Menu(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, index=True)
     name = db.Column(db.String(64))
+    path = db.Column(db.String(256))
     level = db.Column(db.Integer, default=0)
     parent = db.Column(db.Integer)
 
     def keys(self):
-        return ('id', 'name', 'level', 'parent')
+        return ('id', 'name', 'path', 'level', 'parent')
 
     def __getitem__(self, item):
         return getattr(self, item)
