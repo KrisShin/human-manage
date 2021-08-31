@@ -12,7 +12,7 @@
  Target Server Version : 130004
  File Encoding         : 65001
 
- Date: 31/08/2021 10:20:16
+ Date: 31/08/2021 11:58:19
 */
 
 
@@ -66,7 +66,7 @@ ALTER TABLE "public"."alembic_version" OWNER TO "humanuser";
 -- Records of alembic_version
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."alembic_version" VALUES ('7847365fcf82');
+INSERT INTO "public"."alembic_version" VALUES ('85ee87746147');
 COMMIT;
 
 -- ----------------------------
@@ -102,7 +102,8 @@ CREATE TABLE "public"."tb_menu" (
   "id" int4 NOT NULL DEFAULT nextval('tb_menu_id_seq'::regclass),
   "name" varchar(64) COLLATE "pg_catalog"."default",
   "level" int4,
-  "parent" int4
+  "parent" int4,
+  "path" varchar(256) COLLATE "pg_catalog"."default"
 )
 ;
 ALTER TABLE "public"."tb_menu" OWNER TO "humanuser";
@@ -111,14 +112,14 @@ ALTER TABLE "public"."tb_menu" OWNER TO "humanuser";
 -- Records of tb_menu
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."tb_menu" VALUES (1, '基础数据', 0, NULL);
-INSERT INTO "public"."tb_menu" VALUES (2, '人员信息', 1, 1);
-INSERT INTO "public"."tb_menu" VALUES (3, '部门信息', 1, 1);
-INSERT INTO "public"."tb_menu" VALUES (4, '公司信息', 1, 1);
-INSERT INTO "public"."tb_menu" VALUES (5, '业务数据', 0, NULL);
-INSERT INTO "public"."tb_menu" VALUES (6, '社内业务', 1, 5);
-INSERT INTO "public"."tb_menu" VALUES (7, '社外业务', 1, 5);
-INSERT INTO "public"."tb_menu" VALUES (8, '其他业务', 1, 5);
+INSERT INTO "public"."tb_menu" VALUES (1, '基础数据', 0, NULL, '/base');
+INSERT INTO "public"."tb_menu" VALUES (2, '人员信息', 1, 1, '/base/humanInfo');
+INSERT INTO "public"."tb_menu" VALUES (3, '部门信息', 1, 1, '/base/departmentInfo');
+INSERT INTO "public"."tb_menu" VALUES (4, '公司信息', 1, 1, '/base/companyInfo');
+INSERT INTO "public"."tb_menu" VALUES (5, '业务数据', 0, NULL, '/data');
+INSERT INTO "public"."tb_menu" VALUES (6, '社内业务', 1, 5, '/data/Internal');
+INSERT INTO "public"."tb_menu" VALUES (7, '社外业务', 1, 5, '/data/external');
+INSERT INTO "public"."tb_menu" VALUES (8, '其他业务', 1, 5, '/data/other');
 COMMIT;
 
 -- ----------------------------
