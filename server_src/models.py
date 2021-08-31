@@ -62,6 +62,7 @@ class User(db.Model):
             'id',
             'name',
             'email',
+            'age',
             'create_time',
             'update_time',
             'position',
