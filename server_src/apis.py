@@ -19,7 +19,7 @@ def api_user_list():
     department_id = data.get('department_id')
     status = data.get('status')
     gender = data.get('gender')
-    start_time = data.get('create_time')
+    create_time = data.get('create_time')
 
     if name:
         user_list = user_list.filter(User.name.like(f"%{name}%"))
@@ -29,9 +29,9 @@ def api_user_list():
         user_list = user_list.filter_by(gender=gender)
     if department_id:
         user_list = user_list.filter_by(department_id=int(department_id))
-    if start_time:
+    if create_time:
         user_list = user_list.filter(
-            User.create_time >= datetime.strptime(start_time, "%Y-%m-%d")
+            User.create_time >= datetime.strptime(create_time[:10], "%Y-%m-%d")
         )
     total = user_list.count()
     user_list = [dict(user) for user in user_list.paginate(page, page_size).items]
