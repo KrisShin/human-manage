@@ -22,7 +22,7 @@ def api_user_list():
     start_time = data.get('create_time')
 
     if name:
-        user_list = user_list.filter_by(name=name)
+        user_list = user_list.filter(User.name.like(f"%{name}%"))
     if status:
         user_list = user_list.filter(User.status.in_(status))
     if gender is not None:
