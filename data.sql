@@ -1,18 +1,18 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : pg_human_local
+ Source Server         : local_pg
  Source Server Type    : PostgreSQL
- Source Server Version : 120008
+ Source Server Version : 130004
  Source Host           : localhost:35432
  Source Catalog        : humanmanage
  Source Schema         : public
 
  Target Server Type    : PostgreSQL
- Target Server Version : 120008
+ Target Server Version : 130004
  File Encoding         : 65001
 
- Date: 29/08/2021 00:06:58
+ Date: 31/08/2021 10:20:16
 */
 
 
@@ -66,7 +66,7 @@ ALTER TABLE "public"."alembic_version" OWNER TO "humanuser";
 -- Records of alembic_version
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."alembic_version" VALUES ('d658c1c69d81');
+INSERT INTO "public"."alembic_version" VALUES ('7847365fcf82');
 COMMIT;
 
 -- ----------------------------
@@ -137,7 +137,8 @@ CREATE TABLE "public"."tb_users" (
   "salary" float8,
   "status" varchar(64) COLLATE "pg_catalog"."default",
   "department_id" int4,
-  "gender" varchar(2) COLLATE "pg_catalog"."default"
+  "gender" varchar(2) COLLATE "pg_catalog"."default",
+  "age" int4
 )
 ;
 ALTER TABLE "public"."tb_users" OWNER TO "humanuser";
@@ -146,19 +147,19 @@ ALTER TABLE "public"."tb_users" OWNER TO "humanuser";
 -- Records of tb_users
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."tb_users" VALUES (14, 'gayQdURsB', 'qNIidQdY@uWsLcW.com', '2021-09-26 15:51:04.780929', NULL, 'cb59e849db164afdff0be42c9c546716', 'vNbCnyMKIV', 'jFxPHWUzjh', 70858, '在职', 1, '男');
-INSERT INTO "public"."tb_users" VALUES (1, '刘德华', 'dehua.liu@humanmanage.com', '2021-08-26 15:13:50.921226', NULL, 'cb59e849db164afdff0be42c9c546716', '前端开发', '上海', 15000, '在职', 1, '男');
-INSERT INTO "public"."tb_users" VALUES (2, '马德华', 'dehua.ma@humanmanage.com', '2021-08-26 15:16:43.712553', NULL, 'cb59e849db164afdff0be42c9c546716', 'Java开发', '成都', 18000, '在职', NULL, '男');
-INSERT INTO "public"."tb_users" VALUES (3, '张学友', 'xueyou.zhang@humanmanage.com', '2021-08-26 15:17:45.96305', NULL, 'cb59e849db164afdff0be42c9c546716', '保洁', '天津', 8000, '休假', 1, '男');
-INSERT INTO "public"."tb_users" VALUES (5, 'CocmsKh', 'sMKjTikh@NqOQjaRK.com', '2021-08-26 15:51:04.701423', NULL, 'cb59e849db164afdff0be42c9c546716', 'LCjRjkj', 'bbDYN', 139133, '休假', 6, '男');
-INSERT INTO "public"."tb_users" VALUES (6, 'PsomXek', 'mnziUti@eGMhhox.com', '2021-08-26 15:51:04.737983', NULL, 'cb59e849db164afdff0be42c9c546716', 'uAEUEdAUl', 'jwrQZc', 40203, '在职', 6, '男');
-INSERT INTO "public"."tb_users" VALUES (7, 'BcZPHglEZ', 'JqaVWAHKGd@DnFfH.com', '2021-08-30 15:51:04.74774', NULL, 'cb59e849db164afdff0be42c9c546716', 'lvMFllhHrJ', 'ZWFrBqa', 119884, '在职', 4, '男');
-INSERT INTO "public"."tb_users" VALUES (8, 'kOxxmYXDeN', 'UnhmbGSbO@BkadoQhWY.com', '2021-08-30 15:51:04.74774', NULL, 'cb59e849db164afdff0be42c9c546716', 'JdTjhxUm', 'iTIABixj', 103772, '在职', 8, '女');
-INSERT INTO "public"."tb_users" VALUES (9, 'lEdrVCmah', 'UwjmU@DeDPbKAuH.com', '2021-08-30 15:51:04.74774', NULL, 'cb59e849db164afdff0be42c9c546716', 'htLmQ', 'xwQmEU', 184634, '在职', 1, '女');
-INSERT INTO "public"."tb_users" VALUES (10, 'hzFGgKN', 'oquvVHBRKa@jAiGzMus.com', '2021-08-30 15:51:04.74774', NULL, 'cb59e849db164afdff0be42c9c546716', 'rOUsbBBP', 'SEhVEdeV', 179399, '在职', 5, '女');
-INSERT INTO "public"."tb_users" VALUES (11, 'CeXImx', 'UtYdrnrorQ@oBfCx.com', '2021-08-30 15:51:04.74774', NULL, 'cb59e849db164afdff0be42c9c546716', 'mnfGjNGYhg', 'eamZLju', 133264, '在职', 1, '女');
-INSERT INTO "public"."tb_users" VALUES (12, 'LrUQeOcTh', 'SFZDycyF@MyMaUCQvpB.com', '2021-09-26 15:51:04.780929', NULL, 'cb59e849db164afdff0be42c9c546716', 'EELGVvC', 'ngfAOWCYPH', 104123, '在职', 6, '女');
-INSERT INTO "public"."tb_users" VALUES (13, 'xatnOLU', 'ZBGGC@jLtYbJZwu.com', '2021-09-26 15:51:04.780929', NULL, 'cb59e849db164afdff0be42c9c546716', 'sDzbnxhkH', 'HrCqG', 62536, '在职', 2, '女');
+INSERT INTO "public"."tb_users" VALUES (14, 'gayQdURsB', 'qNIidQdY@uWsLcW.com', '2021-09-26 15:51:04.780929', NULL, 'cb59e849db164afdff0be42c9c546716', 'vNbCnyMKIV', 'jFxPHWUzjh', 70858, '在职', 1, '男', 23);
+INSERT INTO "public"."tb_users" VALUES (1, '刘德华', 'dehua.liu@humanmanage.com', '2021-08-26 15:13:50.921226', NULL, 'cb59e849db164afdff0be42c9c546716', '前端开发', '上海', 15000, '在职', 1, '男', 35);
+INSERT INTO "public"."tb_users" VALUES (6, 'PsomXek', 'mnziUti@eGMhhox.com', '2021-08-26 15:51:04.737983', NULL, 'cb59e849db164afdff0be42c9c546716', 'uAEUEdAUl', 'jwrQZc', 40203, '在职', 6, '男', 37);
+INSERT INTO "public"."tb_users" VALUES (5, 'CocmsKh', 'sMKjTikh@NqOQjaRK.com', '2021-08-26 15:51:04.701423', NULL, 'cb59e849db164afdff0be42c9c546716', 'LCjRjkj', 'bbDYN', 139133, '休假', 6, '男', 26);
+INSERT INTO "public"."tb_users" VALUES (2, '马德华', 'dehua.ma@humanmanage.com', '2021-08-26 15:16:43.712553', NULL, 'cb59e849db164afdff0be42c9c546716', 'Java开发', '成都', 18000, '在职', NULL, '男', 45);
+INSERT INTO "public"."tb_users" VALUES (3, '张学友', 'xueyou.zhang@humanmanage.com', '2021-08-26 15:17:45.96305', NULL, 'cb59e849db164afdff0be42c9c546716', '保洁', '天津', 8000, '休假', 1, '男', 43);
+INSERT INTO "public"."tb_users" VALUES (7, 'BcZPHglEZ', 'JqaVWAHKGd@DnFfH.com', '2021-08-30 15:51:04.74774', NULL, 'cb59e849db164afdff0be42c9c546716', 'lvMFllhHrJ', 'ZWFrBqa', 119884, '在职', 4, '男', 37);
+INSERT INTO "public"."tb_users" VALUES (8, 'kOxxmYXDeN', 'UnhmbGSbO@BkadoQhWY.com', '2021-08-30 15:51:04.74774', NULL, 'cb59e849db164afdff0be42c9c546716', 'JdTjhxUm', 'iTIABixj', 103772, '在职', 8, '女', 32);
+INSERT INTO "public"."tb_users" VALUES (10, 'hzFGgKN', 'oquvVHBRKa@jAiGzMus.com', '2021-08-30 15:51:04.74774', NULL, 'cb59e849db164afdff0be42c9c546716', 'rOUsbBBP', 'SEhVEdeV', 179399, '在职', 5, '女', 29);
+INSERT INTO "public"."tb_users" VALUES (9, 'lEdrVCmah', 'UwjmU@DeDPbKAuH.com', '2021-08-30 15:51:04.74774', NULL, 'cb59e849db164afdff0be42c9c546716', 'htLmQ', 'xwQmEU', 184634, '在职', 1, '女', 29);
+INSERT INTO "public"."tb_users" VALUES (11, 'CeXImx', 'UtYdrnrorQ@oBfCx.com', '2021-08-30 15:51:04.74774', NULL, 'cb59e849db164afdff0be42c9c546716', 'mnfGjNGYhg', 'eamZLju', 133264, '在职', 1, '女', 26);
+INSERT INTO "public"."tb_users" VALUES (12, 'LrUQeOcTh', 'SFZDycyF@MyMaUCQvpB.com', '2021-09-26 15:51:04.780929', NULL, 'cb59e849db164afdff0be42c9c546716', 'EELGVvC', 'ngfAOWCYPH', 104123, '在职', 6, '女', 30);
+INSERT INTO "public"."tb_users" VALUES (13, 'xatnOLU', 'ZBGGC@jLtYbJZwu.com', '2021-09-26 15:51:04.780929', NULL, 'cb59e849db164afdff0be42c9c546716', 'sDzbnxhkH', 'HrCqG', 62536, '在职', 2, '女', 33);
 COMMIT;
 
 -- ----------------------------
@@ -166,21 +167,21 @@ COMMIT;
 -- ----------------------------
 ALTER SEQUENCE "public"."tb_department_id_seq"
 OWNED BY "public"."tb_department"."id";
-SELECT setval('"public"."tb_department_id_seq"', 11, true);
+SELECT setval('"public"."tb_department_id_seq"', 12, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."tb_menu_id_seq"
 OWNED BY "public"."tb_menu"."id";
-SELECT setval('"public"."tb_menu_id_seq"', 11, true);
+SELECT setval('"public"."tb_menu_id_seq"', 12, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."tb_users_id_seq"
 OWNED BY "public"."tb_users"."id";
-SELECT setval('"public"."tb_users_id_seq"', 17, true);
+SELECT setval('"public"."tb_users_id_seq"', 18, true);
 
 -- ----------------------------
 -- Primary Key structure for table alembic_version
