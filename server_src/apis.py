@@ -64,9 +64,10 @@ def api_user_options():
         user.email = data.get('email')
         password = make_password(data.get('password', 'password'))
         user.position = data.get('position')
+        user.age = data.get('age')
         user.office = data.get('office')
         user.salary = data.get('salary', 0)
-        user.gender = data.get('gender', '男')
+        user.gender = data.get('gender')
         user.status = data.get('status')
         user.department_id = data.get('department_id', 1)
 
@@ -79,6 +80,7 @@ def api_user_options():
 
         user = User.query.filter_by(id=user_id).first()
         name = data.get('name')
+        age = data.get('age')
         email = data.get('email')
         password = data.get('password')
         if password:
@@ -92,6 +94,8 @@ def api_user_options():
 
         if name:
             user.name = name
+        if age is not None:
+            user.age = age
         if email:
             user.email = email
         if password:
