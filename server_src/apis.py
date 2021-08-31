@@ -14,7 +14,7 @@ def api_user_list():
     data = request.args
     page = int(data.get('page', 1) or 1)
     page_size = int(data.get('pageSize', 10) or 10)
-    user_list = User.query
+    user_list = User.query.order_by(User.create_time.desc())
 
     name = data.get('name')
     department_id = data.get('department_id')
