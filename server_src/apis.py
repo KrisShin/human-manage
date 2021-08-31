@@ -145,7 +145,7 @@ def api_user_login():
     if not user:
         return jsonify({'code': status_code.USER_NOT_EXIST, 'msg': '用户不存在'})
 
-    if password != user.password:
+    if make_password(password) != user.password:
         return jsonify({'code': status_code.USER_WRONG_PASSWORD, 'msg': '密码错误'})
 
     return jsonify({'code': status_code.OK, 'data': dict(user)})
