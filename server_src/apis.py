@@ -17,7 +17,7 @@ def api_user_list():
 
     name = data.get('name')
     department_id = data.get('department_id')
-    status = data.get('status', '[]')
+    status = data.get('status')
     gender = data.get('gender')
     start_time = data.get('create_time')
 
