@@ -54,18 +54,23 @@ def api_user_options():
         user = User.query.filter_by(id=user_id).first()
         return jsonify({'code': status_code.OK, 'data': dict(user)})
     elif request.method == 'POST':
+        import random, string
         data = request.get_json()
 
         user = User()
         user.name = data.get('name')
-        user.email = data.get('email')
-        password = make_password(data.get('password', 'password'))
+        user.email = data.get(
+            'email',
+            ''.join(random.choices(string.ascii_letters, k=random.randint(5, 10)))
+            + '@email.com',
+        )
+        user.password = make_password(data.get('password', 'password'))
         user.position = data.get('position')
-        user.age = data.get('age')
+        user.age = data.get('age', 0)
         user.office = data.get('office')
         user.salary = data.get('salary', 0)
-        user.gender = data.get('gender')
-        user.status = data.get('status')
+        user.gender = data.get('gender', '男')
+        user.status = data.get('status', '在职')
         user.department_id = data.get('department_id', 1)
 
         db.session.add(user)
@@ -179,22 +184,20 @@ def mock_users():
         )
         user.email = (
             ''.join(random.choices(string.ascii_letters, k=random.randint(5, 10)))
-            + '@'
-            + ''.join(random.choices(string.ascii_letters, k=random.randint(5, 10)))
-            + '.com'
+            + '@email.com'
         )
-        user.password = "password"
+        user.password = make_password("password")
         user.position = ''.join(
             random.choices(string.ascii_letters, k=random.randint(5, 10))
         )
         user.office = ''.join(
             random.choices(string.ascii_letters, k=random.randint(5, 10))
         )
-        user.salary = random.randint(2000, 200000)
+        user.salary = random.randint(2, 200) * 1000
         user.status = ''.join(
             random.choices(string.ascii_letters, k=random.randint(5, 10))
         )
-        user.department_id = random.choice((1, 2, 3, 4, 5, 6, 7, 8))
+        user.department_id = random.randint(1, 8)
 
         db.session.add(user)
         db.session.commit()
