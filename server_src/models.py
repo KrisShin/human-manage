@@ -77,7 +77,7 @@ class User(db.Model):
     def __getitem__(self, item):
         if item in ('create_time', 'update_time'):
             time = getattr(self, item)
-            return str(time) if time else time
+            return str(time)[:19] if time else time
         elif item == 'department':
             if self.department:
                 return self.department.name
