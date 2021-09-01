@@ -55,6 +55,7 @@ def api_user_options():
         return jsonify({'code': status_code.OK, 'data': dict(user)})
     elif request.method == 'POST':
         import random, string
+
         data = request.get_json()
 
         user = User()
@@ -194,10 +195,9 @@ def mock_users():
             random.choices(string.ascii_letters, k=random.randint(5, 10))
         )
         user.salary = random.randint(2, 200) * 1000
-        user.status = ''.join(
-            random.choices(string.ascii_letters, k=random.randint(5, 10))
-        )
+        user.status = random.choices('在职', '休假')
         user.department_id = random.randint(1, 8)
+        user.age = random.randint(22, 60)
 
         db.session.add(user)
         db.session.commit()
