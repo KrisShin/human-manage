@@ -88,7 +88,7 @@
 4. 启动前端服务
 
     ```bash
-    npm run server
+    npm run serve
     ```
 
 ### 查看页面
