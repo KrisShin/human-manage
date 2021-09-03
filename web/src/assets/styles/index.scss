@@ -1,0 +1,23 @@
+@import './flex-box.scss';
+@import './navbar.scss';
+@import './sidebar.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  box-sizing: border-box;
+  background-color: #fbfbfb;
+}
+
+li {
+  list-style: none;
+}
+
+#app {
+  height: 100%;
+  padding: 20px 30px;
+}
