@@ -1,5 +1,5 @@
 from utils.util import make_password
-from server_src.models import Department, Menu, User
+from server_src.models import Department, User
 from flask import Blueprint, jsonify, request
 from config import status_code
 from config.global_params import db
