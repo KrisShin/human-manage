@@ -125,9 +125,10 @@ class UserInfo(BaseInfo):
 class SystemCode(BaseInfo):
     __tablename__ = 'm_system_code'
 
-    code_kbn = db.Column(db.String(3), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    code_kbn = db.Column(db.String(3))
     code_kbn_nm = db.Column(db.String(10))
-    code_no = db.Column(db.String(3), primary_key=True)
+    code_no = db.Column(db.String(3))
     code_nm = db.Column(db.String(10))
     flug1 = db.Column(db.String(1))
     flug1_nm = db.Column(db.String(10))
@@ -141,6 +142,22 @@ class SystemCode(BaseInfo):
         db.ForeignKey("m_factory.factory_cd", ondelete="CASCADE"),
         index=True,
     )
+
+
+class TableDefine(db.Model):
+    __tablename__ = 'm_table_define'
+
+    class_name = db.Column(db.String(2), primary_key=True)
+    tbl_code = db.Column(db.String(20), primary_key=True)
+    tbl_name = db.Column(db.String(20))
+    field_code = db.Column(db.String(20))
+    field_name = db.Column(db.String(20))
+    type = db.Column(db.String(20))
+    size = db.Column(db.String(20))
+    decimal = db.Column(db.Integer)
+    nullable = db.Column(db.String(1))
+    doc = db.Column(db.String(256))
+    comment = db.Column(db.String(1024))
 
 
 # class Calendar(BaseInfo):
