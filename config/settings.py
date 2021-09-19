@@ -11,7 +11,7 @@ STATIC_PATH = '/static'
 # UPLOAD_DIR = os.path.join(BASE_DIR, 'static', 'upload')
 
 SALT = r'iw2!@5&mj><ak'
-KEY = r'908&#af43$13t4djhaksf;'
+KEY = r'908&#af43$13t4dj'
 
 HTTP_NAME = socket.gethostname()
 HTTP_IP = socket.gethostbyname(HTTP_NAME)

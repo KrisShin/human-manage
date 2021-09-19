@@ -96,9 +96,9 @@ class User(db.Model):
 
 
 class UserInfo(BaseInfo):
-    # __tablename__ = 'm_user_info'
-    __abstract__ = True
+    __tablename__ = 'm_user_info'
 
+    id = db.Column(db.Integer, primary_key=True, index=True)
     name = db.Column(db.String(32), nullable=False)
     sex = db.Column(db.Integer, nullable=False, index=True)  # 1:男, 2:女
     birthday = db.Column(db.DateTime)
@@ -143,22 +143,22 @@ class SystemCode(BaseInfo):
     )
 
 
-class Calendar(BaseInfo):
-    __tablename__ = 'm_calendar'
+# class Calendar(BaseInfo):
+#     __tablename__ = 'm_calendar'
 
-    calendar_date = db.Column(db.String(8), primary_key=True)
-    Seq_No = db.Column(db.Integer, primary_key=True)
-    holiday_flg = db.Column(db.Integer, index=True)  # 0:工作日，1休息日
-    holiday_nm = db.Column(db.String(10))
-    event_cd = db.Column(db.Integer, index=True)  # 0: ALL 1: 作業者  2: 設備　3:その他
-    event_nm = db.Column(db.String(20))
-    event_time1 = db.Column(db.String(4), nullable=False)
-    event_time2 = db.Column(db.String(4), nullable=False)
-    month_end_flg = db.Column(db.String(1))
-    sche_flg = db.Column(db.String(1))
+#     calendar_date = db.Column(db.String(8), primary_key=True)
+#     Seq_No = db.Column(db.Integer, primary_key=True)
+#     holiday_flg = db.Column(db.Integer, index=True)  # 0:工作日，1休息日
+#     holiday_nm = db.Column(db.String(10))
+#     event_cd = db.Column(db.Integer, index=True)  # 0: ALL 1: 作業者  2: 設備　3:その他
+#     event_nm = db.Column(db.String(20))
+#     event_time1 = db.Column(db.String(4), nullable=False)
+#     event_time2 = db.Column(db.String(4), nullable=False)
+#     month_end_flg = db.Column(db.String(1))
+#     sche_flg = db.Column(db.String(1))
 
-    factory_cd = db.Column(
-        db.String(2),
-        db.ForeignKey("m_factory.factory_cd", ondelete="CASCADE"),
-        index=True,
-    )
+#     factory_cd = db.Column(
+#         db.String(2),
+#         db.ForeignKey("m_factory.factory_cd", ondelete="CASCADE"),
+#         index=True,
+#     )

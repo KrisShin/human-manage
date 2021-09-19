@@ -12,6 +12,7 @@ configparser = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
 gevent = "*"
+pycryptodome = "*"
 
 [dev-packages]
 
