@@ -52,3 +52,7 @@ def del_invalify_image(path):
 
 def get_captcha():
     return ''.join(random.choices(string.digits + string.ascii_letters, k=8))
+
+
+def get_parse_response(items):
+    return [dict(i) for i in items]

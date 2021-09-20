@@ -1,11 +1,35 @@
-from utils.util import make_password
-from server_src.models import Department, User
+from utils.util import make_password, get_parse_response
+from server_src.models import Department, User, SystemCode
 from flask import Blueprint, jsonify, request
 from config import status_code
 from config.global_params import db
 from datetime import datetime
 
 apis = Blueprint('apis', __name__, url_prefix='/api')
+
+
+@apis.route('/user/role/list', methods=['GET'])
+def api_user_role_list():
+    items = SystemCode.query.filter(code_kbn='01').all()
+    resp = get_parse_response(items)
+
+    return jsonify({'code': status_code.OK, 'data': resp})
+
+
+@apis.route('/user/duty/list', methods=['GET'])
+def api_user_duty_list():
+    items = SystemCode.query.filter(code_kbn='02').all()
+    resp = get_parse_response(items)
+
+    return jsonify({'code': status_code.OK, 'data': resp})
+
+
+@apis.route('/user/abort/list', methods=['GET'])
+def api_user_abort_list():
+    items = SystemCode.query.filter(code_kbn='00').all()
+    resp = get_parse_response(items)
+
+    return jsonify({'code': status_code.OK, 'data': resp})
 
 
 @apis.route('/user/list/', methods=['POST'])
@@ -34,7 +58,7 @@ def api_user_list():
             User.create_time >= datetime.strptime(create_time[:19], "%Y-%m-%dT%H:%M:%S")
         )
     total = user_list.count()
-    user_list = [dict(user) for user in user_list.paginate(page, page_size).items]
+    user_list = get_parse_response(user_list.paginate(page, page_size).items)
     return jsonify(
         {
             'code': status_code.OK,

@@ -5,8 +5,6 @@ from datetime import datetime
 class BaseInfo(db.Model):
     __abstract__ = True
 
-    # 数据状态0 正常, 1 停用, 2 废弃
-    abort_div = db.Column(db.Integer, default=0, index=True)
     update_user_id = db.Column(db.String(32))
     update_count = db.Column(db.Integer)
     update_pgid = db.Column(db.String(512))
@@ -15,14 +13,65 @@ class BaseInfo(db.Model):
     comment = db.Column(db.Text)
 
 
+class SystemCode(BaseInfo):
+    __tablename__ = 'm_system_code'
+
+    id = db.Column(db.Integer, primary_key=True)
+    code_kbn = db.Column(db.String(3))
+    code_kbn_nm = db.Column(db.String(32))
+    code_no = db.Column(db.String(3))
+    code_nm = db.Column(db.String(32))
+    flug1 = db.Column(db.String(1))
+    flug1_nm = db.Column(db.String(32))
+    flug2 = db.Column(db.String(1))
+    flug2_nm = db.Column(db.String(10))
+    flug3 = db.Column(db.String(1))
+    flug3_nm = db.Column(db.String(100))
+
+    factory_cd = db.Column(
+        db.String(2),
+        db.ForeignKey("m_factory.factory_cd"),
+        index=True,
+    )
+
+    __table_args__ = (db.UniqueConstraint("code_kbn", "code_no", name="unique_kbn_no"),)
+
+    def keys(self):
+        return ('code_kbn', 'code_kbn_nm', 'code_no', 'code_nm')
+
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+
 class Factory(BaseInfo):
     __tablename__ = 'm_factory'
 
     factory_cd = db.Column(db.String(2), primary_key=True)
     factory_nm = db.Column(db.String(64))
 
+    abort_div = db.Column(
+        db.Integer,
+        db.ForeignKey("m_system_code.id"),
+    )  # 数据状态0 正常, 1 停用, 2 废弃
 
-class Department(db.Model):
+    deps = db.relationship(
+        "Department",
+        backref="factory",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        lazy=True,
+    )
+
+    users = db.relationship(
+        "User",
+        backref="factory",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        lazy=True,
+    )
+
+
+class Department(BaseInfo):
     __tablename__ = 'm_department'
 
     dep_cd = db.Column(db.String(10), primary_key=True)
@@ -32,6 +81,19 @@ class Department(db.Model):
         db.String(2),
         db.ForeignKey("m_factory.factory_cd", ondelete="CASCADE"),
         index=True,
+    )
+
+    abort_div = db.Column(
+        db.Integer,
+        db.ForeignKey("m_system_code.id"),
+    )  # 数据状态0 正常, 1 停用, 2 废弃
+
+    users = db.relationship(
+        "User",
+        backref="dep",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        lazy=True,
     )
 
     # def keys(self):
@@ -47,42 +109,54 @@ class User(db.Model):
     user_cd = db.Column(db.String(6), primary_key=True)
     user_nm = db.Column(db.String(64))  # 用户昵称
     password = db.Column(db.String(512))
+    create_user_id = db.Column(db.String(6))
+
     role_cd = db.Column(
         db.Integer,
-        default=2,
-        nullable=False,
-        index=True,
-    )  # 0:超级管理员, 1:管理员, 2: 普通用户
-    duty_cd = db.Column(db.String(2), nullable=True, default='男')
-    create_user_id = db.Column(db.String(6))
+        db.ForeignKey("m_system_code.id"),
+    )  # 关联到system_code: kbn=01
+
+    duty_cd = db.Column(
+        db.Integer,
+        db.ForeignKey("m_system_code.id"),
+        nullable=True,
+    )  # 关联system_code: kbn=02
 
     dep_cd = db.Column(
         db.String(10),
-        db.ForeignKey("m_department.dep_cd", ondelete="CASCADE"),
-        index=True,
-    )
-    factory_cd = db.Column(
-        db.String(2),
-        db.ForeignKey("m_factory.factory_cd", ondelete="CASCADE"),
-        index=True,
+        db.ForeignKey("m_department.dep_cd"),
     )
 
-    # def keys(self):
-    #     return (
-    #         'id',
-    #         'name',
-    #         'email',
-    #         'age',
-    #         'create_time',
-    #         'update_time',
-    #         'position',
-    #         'status',
-    #         'office',
-    #         'gender',
-    #         'salary',
-    #         'department_id',
-    #         'department',
-    #     )
+    factory_cd = db.Column(
+        db.String(2),
+        db.ForeignKey("m_factory.factory_cd"),
+    )
+
+    abort_div = db.Column(
+        db.Integer,
+        db.ForeignKey("m_system_code.id"),
+    )  # 数据状态0 正常, 1 停用, 2 废弃
+
+    info = db.relationship(
+        "UserInfo",
+        backref="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        lazy=True,
+    )
+
+    def keys(self):
+        return (
+            'user_cd',
+            'user_nm',
+            'role',
+            'duty',
+            'abort',
+            'factory',
+            'department',
+            'update_time',
+        )
 
     # def __getitem__(self, item):
     #     if item in ('create_time', 'update_time'):
@@ -121,27 +195,10 @@ class UserInfo(BaseInfo):
         index=True,
     )
 
-
-class SystemCode(BaseInfo):
-    __tablename__ = 'm_system_code'
-
-    id = db.Column(db.Integer, primary_key=True)
-    code_kbn = db.Column(db.String(3))
-    code_kbn_nm = db.Column(db.String(32))
-    code_no = db.Column(db.String(3))
-    code_nm = db.Column(db.String(32))
-    flug1 = db.Column(db.String(1))
-    flug1_nm = db.Column(db.String(32))
-    flug2 = db.Column(db.String(1))
-    flug2_nm = db.Column(db.String(10))
-    flug3 = db.Column(db.String(1))
-    flug3_nm = db.Column(db.String(100))
-
-    factory_cd = db.Column(
-        db.String(2),
-        db.ForeignKey("m_factory.factory_cd", ondelete="CASCADE"),
-        index=True,
-    )
+    abort_div = db.Column(
+        db.Integer,
+        db.ForeignKey("m_system_code.id"),
+    )  # 数据状态0 正常, 1 停用, 2 废弃
 
 
 class TableDefine(db.Model):
