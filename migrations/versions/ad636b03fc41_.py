@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 55d8a44fdf02
+Revision ID: ad636b03fc41
 Revises: 
-Create Date: 2021-09-19 22:52:06.587234
+Create Date: 2021-09-20 15:42:56.255713
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '55d8a44fdf02'
+revision = 'ad636b03fc41'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -31,6 +31,20 @@ def upgrade():
     sa.PrimaryKeyConstraint('factory_cd')
     )
     op.create_index(op.f('ix_m_factory_abort_div'), 'm_factory', ['abort_div'], unique=False)
+    op.create_table('m_table_define',
+    sa.Column('class_name', sa.String(length=2), nullable=False),
+    sa.Column('tbl_code', sa.String(length=20), nullable=False),
+    sa.Column('tbl_name', sa.String(length=20), nullable=True),
+    sa.Column('field_code', sa.String(length=20), nullable=True),
+    sa.Column('field_name', sa.String(length=20), nullable=True),
+    sa.Column('type', sa.String(length=20), nullable=True),
+    sa.Column('size', sa.String(length=20), nullable=True),
+    sa.Column('decimal', sa.Integer(), nullable=True),
+    sa.Column('nullable', sa.String(length=1), nullable=True),
+    sa.Column('doc', sa.String(length=256), nullable=True),
+    sa.Column('comment', sa.String(length=1024), nullable=True),
+    sa.PrimaryKeyConstraint('class_name', 'tbl_code')
+    )
     op.create_table('m_department',
     sa.Column('dep_cd', sa.String(length=10), nullable=False),
     sa.Column('dep_name', sa.String(length=64), nullable=True),
@@ -47,19 +61,20 @@ def upgrade():
     sa.Column('create_time', sa.DateTime(), nullable=True),
     sa.Column('update_time', sa.DateTime(), nullable=True),
     sa.Column('comment', sa.Text(), nullable=True),
-    sa.Column('code_kbn', sa.String(length=3), nullable=False),
-    sa.Column('code_kbn_nm', sa.String(length=10), nullable=True),
-    sa.Column('code_no', sa.String(length=3), nullable=False),
-    sa.Column('code_nm', sa.String(length=10), nullable=True),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('code_kbn', sa.String(length=3), nullable=True),
+    sa.Column('code_kbn_nm', sa.String(length=32), nullable=True),
+    sa.Column('code_no', sa.String(length=3), nullable=True),
+    sa.Column('code_nm', sa.String(length=32), nullable=True),
     sa.Column('flug1', sa.String(length=1), nullable=True),
-    sa.Column('flug1_nm', sa.String(length=10), nullable=True),
+    sa.Column('flug1_nm', sa.String(length=32), nullable=True),
     sa.Column('flug2', sa.String(length=1), nullable=True),
     sa.Column('flug2_nm', sa.String(length=10), nullable=True),
     sa.Column('flug3', sa.String(length=1), nullable=True),
     sa.Column('flug3_nm', sa.String(length=100), nullable=True),
     sa.Column('factory_cd', sa.String(length=2), nullable=True),
     sa.ForeignKeyConstraint(['factory_cd'], ['m_factory.factory_cd'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('code_kbn', 'code_no')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_m_system_code_abort_div'), 'm_system_code', ['abort_div'], unique=False)
     op.create_index(op.f('ix_m_system_code_factory_cd'), 'm_system_code', ['factory_cd'], unique=False)
@@ -128,6 +143,7 @@ def downgrade():
     op.drop_table('m_system_code')
     op.drop_index(op.f('ix_m_department_factory_cd'), table_name='m_department')
     op.drop_table('m_department')
+    op.drop_table('m_table_define')
     op.drop_index(op.f('ix_m_factory_abort_div'), table_name='m_factory')
     op.drop_table('m_factory')
     # ### end Alembic commands ###
