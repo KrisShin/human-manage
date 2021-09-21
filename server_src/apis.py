@@ -1,4 +1,5 @@
-from utils.util import make_password, get_parse_response
+from server_src.wraps import generate_token
+from utils.util import check_password, make_password, get_parse_response
 from server_src.models import Department, User, SystemCode
 from flask import Blueprint, jsonify, request
 from config import status_code
@@ -152,41 +153,45 @@ def api_user_options():
         return jsonify({'code': status_code.OK})
 
 
-@apis.route('/menu/list/', methods=['GET'])
-def api_menu_list():
-    menu_list = Menu.query.order_by(Menu.level).all()
+# @apis.route('/menu/list/', methods=['GET'])
+# def api_menu_list():
+#     menu_list = Menu.query.order_by(Menu.level).all()
 
-    resp = []
-    menus = {}
-    for menu in menu_list:
-        line = {}
-        if menu.level == 0:
-            line['title'] = menu.name
-            line['path'] = menu.path
-            line['children'] = []
-            resp.append(line)
-            menus[menu.id] = line
-        elif menu.level == 1:
-            line = menus[menu.parent]
-            subline = {'title': menu.name, 'path': menu.path}
-            line['children'].append(subline)
-    return jsonify({'code': status_code.OK, 'data': resp})
+#     resp = []
+#     menus = {}
+#     for menu in menu_list:
+#         line = {}
+#         if menu.level == 0:
+#             line['title'] = menu.name
+#             line['path'] = menu.path
+#             line['children'] = []
+#             resp.append(line)
+#             menus[menu.id] = line
+#         elif menu.level == 1:
+#             line = menus[menu.parent]
+#             subline = {'title': menu.name, 'path': menu.path}
+#             line['children'].append(subline)
+#     return jsonify({'code': status_code.OK, 'data': resp})
 
 
 @apis.route('/user/login/', methods=['POST'])
-def api_user_login():
+def student_login():
+    '''Login user by phone and password.'''
+
     data = request.get_json()
-    email = data.get('email')
+    work_no = data.get('work_no')
     password = data.get('password')
 
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        return jsonify({'code': status_code.USER_NOT_EXIST, 'msg': '用户不存在'})
+    stu_obj = User.query.filter_by(work_no=work_no).first()
+    if not stu_obj:
+        return jsonify({'code': status_code.USER_NOT_EXISIT, 'msg': '该学生不存在'})
 
-    if make_password(password) != user.password:
-        return jsonify({'code': status_code.USER_WRONG_PASSWORD, 'msg': '密码错误'})
+    if not check_password(password, stu_obj.password):
+        return jsonify({'code': status_code.USER_WRONG_PWD, 'msg': '密码错误'})
 
-    return jsonify({'code': status_code.OK, 'data': dict(user)})
+    Authorization = generate_token(uid=stu_obj.uid, role='student')
+
+    return jsonify({"code": status_code.OK, 'token': Authorization})
 
 
 @apis.route('/department/list/', methods=['GET'])
