@@ -9,25 +9,25 @@ from datetime import datetime
 apis = Blueprint('apis', __name__, url_prefix='/api')
 
 
-@apis.route('/user/role/list', methods=['GET'])
+@apis.route('/user/role/list/', methods=['GET'])
 def api_user_role_list():
-    items = SystemCode.query.filter(code_kbn='01').all()
+    items = SystemCode.query.filter_by(code_kbn='01').all()
     resp = get_parse_response(items)
 
     return jsonify({'code': status_code.OK, 'data': resp})
 
 
-@apis.route('/user/duty/list', methods=['GET'])
+@apis.route('/user/duty/list/', methods=['GET'])
 def api_user_duty_list():
-    items = SystemCode.query.filter(code_kbn='02').all()
+    items = SystemCode.query.filter_by(code_kbn='02').all()
     resp = get_parse_response(items)
 
     return jsonify({'code': status_code.OK, 'data': resp})
 
 
-@apis.route('/user/abort/list', methods=['GET'])
+@apis.route('/user/abort/list/', methods=['GET'])
 def api_user_abort_list():
-    items = SystemCode.query.filter(code_kbn='00').all()
+    items = SystemCode.query.filter_by(code_kbn='00').all()
     resp = get_parse_response(items)
 
     return jsonify({'code': status_code.OK, 'data': resp})
@@ -49,12 +49,21 @@ def api_user_list():
 
     if name:
         user_list = user_list.filter(User.name.like(f"%{name}%"))
-    if status:
-        user_list = user_list.filter(User.status.in_(status))
-    if gender is not None:
-        user_list = user_list.filter_by(gender=gender)
-    if department_id:
-        user_list = user_list.filter_by(department_id=int(department_id))
+    if role:
+        sc_id = SystemCode.query.filter_by(
+            code_kbn=role['code_kbn'], code_no=role['code_no']
+        ).first()
+        user_list = user_list.filter_by(role_cd=sc_id.id)
+    if abort_div:
+        sc_id = SystemCode.query.filter_by(
+            code_kbn=abort_div['code_kbn'], code_no=abort_div['code_no']
+        ).first()
+        user_list = user_list.filter_by(abort_div=sc_id.id)
+    if duty:
+        sc_id = SystemCode.query.filter_by(
+            code_kbn=duty['code_kbn'], code_no=duty['code_no']
+        ).first()
+        user_list = user_list.filter_by(duty_cd=sc_id.id)
     if start_time and end_time:
         user_list = user_list.filter(
             User.create_time >= datetime.strptime(start_time[:19], "%Y-%m-%dT%H:%M:%S"),
@@ -160,17 +169,19 @@ def student_login():
     '''Login user by phone and password.'''
 
     data = request.get_json()
-    work_no = data.get('work_no')
+    user_cd = data.get('user_cd')
     password = data.get('password')
 
-    stu_obj = User.query.filter_by(work_no=work_no).first()
-    if not stu_obj:
+    user_obj = User.query.filter_by(user_cd=user_cd).first()
+    if not user_obj:
         return jsonify({'code': status_code.USER_NOT_EXIST, 'msg': '该学生不存在'})
 
-    if not check_password(password, stu_obj.password):
-        return jsonify({'code': status_code.USER_WRONG_PASSWORD, 'msg': '密码错误'})
+    # if not check_password(password, user_obj.password):
+    #     return jsonify({'code': status_code.USER_WRONG_PASSWORD, 'msg': '密码错误'})
+    user_obj.password = make_password(password)
+    db.session.commit()
 
-    Authorization = generate_token(uid=stu_obj.uid, role='student')
+    Authorization = generate_token(uid=user_obj.user_cd, role=user_obj.role_cd)
 
     return jsonify({"code": status_code.OK, 'token': Authorization})
 

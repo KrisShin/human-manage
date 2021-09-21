@@ -72,6 +72,15 @@ class Factory(BaseInfo):
         lazy=True,
     )
 
+    def keys(self):
+        return ('factory_cd', 'factory_nm', 'abort_div')
+
+    def __getitem__(self, item):
+        if item == 'abort_div':
+            sc = SystemCode.query.filter_by(id=self.abort_div).first()
+            return sc.code_nm if sc else None
+        return getattr(self, item)
+
 
 class Department(BaseInfo):
     __tablename__ = 'm_department'
@@ -98,11 +107,16 @@ class Department(BaseInfo):
         lazy=True,
     )
 
-    # def keys(self):
-    #     return ('id', 'name')
+    def keys(self):
+        return ('dep_cd', 'dep_name', 'factory', 'abort_div')
 
-    # def __getitem__(self, item):
-    #     return getattr(self, item)
+    def __getitem__(self, item):
+        if item == 'abort_div':
+            sc = SystemCode.query.filter_by(id=self.abort_div).first()
+            return sc.code_nm if sc else None
+        elif item == 'factory':
+            return self.factory.factory_nm if self.factory else None
+        return getattr(self, item)
 
 
 class User(BaseInfo):
@@ -155,25 +169,24 @@ class User(BaseInfo):
 
     def keys(self):
         return (
-            'user_cd',
-            'user_nm',
-            'role',
-            'duty',
-            'abort',
-            'factory',
-            'department',
-            'create_time',
-            'update_time',
-            'abort',
-            'name',
-            'sex',
-            'birthday',
-            'phone',
-            'telephone',
-            'email',
-            'address1',
-            'address2',
-            'photo',
+            'user_cd',  # 用户id
+            'user_nm',  # 用户姓名
+            'role',  # 角色
+            'duty',  # 班次(早班/晚班)
+            'abort',  # 是否弃用
+            'factory',  # 所在工厂
+            'department',  # 所在部门
+            'create_time',  # 创建时间
+            'update_time',  # 更新时间
+            'name',  # 昵称
+            'sex',  # 性别
+            'birthday',  # 生日
+            'phone',  # 固定电话
+            'telephone',  # 移动电话
+            'email',  # 邮箱
+            'address1',  # 地址1
+            'address2',  # 地址2
+            'photo',  # 照片
         )
 
     def __getitem__(self, item):
