@@ -92,7 +92,7 @@ class Department(BaseInfo):
 
     users = db.relationship(
         "User",
-        backref="dep",
+        backref="department",
         cascade="all, delete-orphan",
         passive_deletes=True,
         lazy=True,
@@ -105,8 +105,13 @@ class Department(BaseInfo):
     #     return getattr(self, item)
 
 
-class User(db.Model):
+class User(BaseInfo):
     __tablename__ = 'm_user'
+    PROP_MAP = {
+        'abort': 'abort_div',
+        'role': 'role_cd',
+        'duty': 'duty_cd',
+    }
 
     user_cd = db.Column(db.String(6), primary_key=True)
     user_nm = db.Column(db.String(64))  # 用户昵称
@@ -124,6 +129,11 @@ class User(db.Model):
         nullable=True,
     )  # 关联system_code: kbn=02
 
+    abort_div = db.Column(
+        db.Integer,
+        db.ForeignKey("m_system_code.id"),
+    )  # 数据状态0 正常, 1 停用, 2 废弃
+
     dep_cd = db.Column(
         db.String(10),
         db.ForeignKey("m_department.dep_cd"),
@@ -133,11 +143,6 @@ class User(db.Model):
         db.String(2),
         db.ForeignKey("m_factory.factory_cd"),
     )
-
-    abort_div = db.Column(
-        db.Integer,
-        db.ForeignKey("m_system_code.id"),
-    )  # 数据状态0 正常, 1 停用, 2 废弃
 
     info = db.relationship(
         "UserInfo",
@@ -157,18 +162,48 @@ class User(db.Model):
             'abort',
             'factory',
             'department',
+            'create_time',
             'update_time',
+            'abort',
+            'name',
+            'sex',
+            'birthday',
+            'phone',
+            'telephone',
+            'email',
+            'address1',
+            'address2',
+            'photo',
         )
 
-    # def __getitem__(self, item):
-    #     if item in ('create_time', 'update_time'):
-    #         time = getattr(self, item)
-    #         return str(time)[:19] if time else time
-    #     elif item == 'department':
-    #         if self.department:
-    #             return self.department.name
-    #         return
-    #     return getattr(self, item)
+    def __getitem__(self, item):
+        if item in ('create_time', 'update_time'):
+            time = getattr(self, item)
+            return str(time)[:19] if time else time
+        elif item == 'department':
+            return self.department.name if self.department else None
+        elif item == 'factory':
+            return self.factory.name if self.factory else None
+        elif item in ('abort', 'role', 'duty'):
+            return self.get_system_code_nm(item)
+        elif item in (
+            'name',
+            'sex',
+            'birthday',
+            'phone',
+            'telephone',
+            'email',
+            'address1',
+            'address2',
+            'photo',
+        ):
+            return getattr(self.info, item)
+        return getattr(self, item)
+
+    def get_system_code_nm(self, item):
+        item_key = self.PROP_MAP[item]
+        res = SystemCode.query.filter_by(id=getattr(self, item_key)).first()
+        return res.code_nm if res else res
 
 
 class UserInfo(BaseInfo):
@@ -181,8 +216,8 @@ class UserInfo(BaseInfo):
     phone = db.Column(db.String(12), nullable=False)
     telephone = db.Column(db.String(12))
     email = db.Column(db.String(128))
-    Address1 = db.Column(db.String(256))
-    Address2 = db.Column(db.String(256))
+    address1 = db.Column(db.String(256))
+    address2 = db.Column(db.String(256))
     photo = db.Column(db.String(1024))
 
     factory_cd = db.Column(

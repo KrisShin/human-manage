@@ -1,6 +1,6 @@
 from server_src.wraps import generate_token
 from utils.util import check_password, make_password, get_parse_response
-from server_src.models import Department, User, SystemCode
+from server_src.models import Department, Factory, User, SystemCode
 from flask import Blueprint, jsonify, request
 from config import status_code
 from config.global_params import db
@@ -41,10 +41,11 @@ def api_user_list():
     user_list = User.query.order_by(User.create_time.desc())
 
     name = data.get('name')
-    department_id = data.get('department_id')
-    status = data.get('status')
-    gender = data.get('gender')
-    create_time = data.get('create_time')
+    role = data.get('role')
+    abort_div = data.get('abort_div')
+    duty = data.get('duty')
+    start_time = data.get('start_time')
+    end_time = data.get('end_time')
 
     if name:
         user_list = user_list.filter(User.name.like(f"%{name}%"))
@@ -54,9 +55,10 @@ def api_user_list():
         user_list = user_list.filter_by(gender=gender)
     if department_id:
         user_list = user_list.filter_by(department_id=int(department_id))
-    if create_time:
+    if start_time and end_time:
         user_list = user_list.filter(
-            User.create_time >= datetime.strptime(create_time[:19], "%Y-%m-%dT%H:%M:%S")
+            User.create_time >= datetime.strptime(start_time[:19], "%Y-%m-%dT%H:%M:%S"),
+            User.create_time <= datetime.strptime(end_time[:19], "%Y-%m-%dT%H:%M:%S"),
         )
     total = user_list.count()
     user_list = get_parse_response(user_list.paginate(page, page_size).items)
@@ -153,27 +155,6 @@ def api_user_options():
         return jsonify({'code': status_code.OK})
 
 
-# @apis.route('/menu/list/', methods=['GET'])
-# def api_menu_list():
-#     menu_list = Menu.query.order_by(Menu.level).all()
-
-#     resp = []
-#     menus = {}
-#     for menu in menu_list:
-#         line = {}
-#         if menu.level == 0:
-#             line['title'] = menu.name
-#             line['path'] = menu.path
-#             line['children'] = []
-#             resp.append(line)
-#             menus[menu.id] = line
-#         elif menu.level == 1:
-#             line = menus[menu.parent]
-#             subline = {'title': menu.name, 'path': menu.path}
-#             line['children'].append(subline)
-#     return jsonify({'code': status_code.OK, 'data': resp})
-
-
 @apis.route('/user/login/', methods=['POST'])
 def student_login():
     '''Login user by phone and password.'''
@@ -184,10 +165,10 @@ def student_login():
 
     stu_obj = User.query.filter_by(work_no=work_no).first()
     if not stu_obj:
-        return jsonify({'code': status_code.USER_NOT_EXISIT, 'msg': '该学生不存在'})
+        return jsonify({'code': status_code.USER_NOT_EXIST, 'msg': '该学生不存在'})
 
     if not check_password(password, stu_obj.password):
-        return jsonify({'code': status_code.USER_WRONG_PWD, 'msg': '密码错误'})
+        return jsonify({'code': status_code.USER_WRONG_PASSWORD, 'msg': '密码错误'})
 
     Authorization = generate_token(uid=stu_obj.uid, role='student')
 
@@ -198,36 +179,13 @@ def student_login():
 def api_department_list():
     dp_list = Department.query.all()
 
-    resp = [dict(dp) for dp in dp_list]
+    resp = get_parse_response(dp_list)
     return jsonify({'code': status_code.OK, 'data': resp})
 
 
-@apis.route('/user/mock/', methods=['GET'])
-def mock_users():
-    import random
-    import string
+@apis.route('/factory/list/', methods=['GET'])
+def api_factory_list():
+    fac_list = Factory.query.all()
 
-    for _ in range(10):
-        user = User()
-        user.name = ''.join(
-            random.choices(string.ascii_letters, k=random.randint(5, 10))
-        )
-        user.email = (
-            ''.join(random.choices(string.ascii_letters, k=random.randint(5, 10)))
-            + '@email.com'
-        )
-        user.password = make_password("password")
-        user.position = ''.join(
-            random.choices(string.ascii_letters, k=random.randint(5, 10))
-        )
-        user.office = ''.join(
-            random.choices(string.ascii_letters, k=random.randint(5, 10))
-        )
-        user.salary = random.randint(2, 200) * 1000
-        user.status = random.choices('在职', '休假')
-        user.department_id = random.randint(1, 8)
-        user.age = random.randint(22, 60)
-
-        db.session.add(user)
-        db.session.commit()
-    return jsonify({'code': status_code.OK})
+    resp = get_parse_response(fac_list)
+    return jsonify({'code': status_code.OK, 'data': resp})
