@@ -176,9 +176,9 @@ def student_login():
     if not user_obj:
         return jsonify({'code': status_code.USER_NOT_EXIST, 'msg': '该学生不存在'})
 
-    # if not check_password(password, user_obj.password):
-    #     return jsonify({'code': status_code.USER_WRONG_PASSWORD, 'msg': '密码错误'})
-    user_obj.password = make_password(password)
+    if not check_password(password, user_obj.password):
+        return jsonify({'code': status_code.USER_WRONG_PASSWORD, 'msg': '密码错误'})
+
     db.session.commit()
 
     Authorization = generate_token(uid=user_obj.user_cd, role=user_obj.role_cd)
