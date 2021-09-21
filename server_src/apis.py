@@ -190,7 +190,7 @@ def student_login():
 def api_department_list():
     data = request.args
     factory_cd = data.get('factory_cd')
-    dp_list = Department.query.fitler_by(factory_cd=factory_cd).all()
+    dp_list = Department.query.filter_by(factory_cd=factory_cd).all()
 
     resp = get_parse_response(dp_list)
     return jsonify({'code': status_code.OK, 'data': resp})
