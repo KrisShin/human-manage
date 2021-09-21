@@ -34,7 +34,9 @@ class SystemCode(BaseInfo):
         index=True,
     )
 
-    __table_args__ = (db.UniqueConstraint("code_kbn", "code_no", name="unique_kbn_no"),)
+    __table_args__ = (
+        db.UniqueConstraint("code_kbn", "code_no", "factory_cd", name="unique_kbn_no"),
+    )
 
     def keys(self):
         return ('code_kbn', 'code_kbn_nm', 'code_no', 'code_nm')
