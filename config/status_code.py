@@ -42,6 +42,9 @@ USER_WRONG_CONFIRM_PASSWORD = 10012
 # 用户不是管理员
 USER_NOT_ADMIN = 10013
 
+# 参数不全
+PARAMS_LACK = 9999
+
 # addr module
 # 地址数据有误(创建地址带上了id)
 ADDR_DATA_ERROR = 1101

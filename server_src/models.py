@@ -187,6 +187,7 @@ class User(BaseInfo):
             'address1',  # 地址1
             'address2',  # 地址2
             'photo',  # 照片
+            'comment',  # 备注
         )
 
     def __getitem__(self, item):
@@ -209,6 +210,7 @@ class User(BaseInfo):
             'address1',
             'address2',
             'photo',
+            'comment',
         ):
             return getattr(self.info, item)
         return getattr(self, item)

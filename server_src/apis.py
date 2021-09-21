@@ -1,6 +1,8 @@
+from config.settings import IMAGE_PREFIX, STATIC_FOLDER
+import os
 from server_src.wraps import generate_token
-from utils.util import check_password, make_password, get_parse_response
-from server_src.models import Department, Factory, User, SystemCode
+from utils.util import check_password, make_password, get_parse_response, gen_uuid_name
+from server_src.models import Department, Factory, User, SystemCode, UserInfo
 from flask import Blueprint, jsonify, request
 from config import status_code
 from config.global_params import db
@@ -86,82 +88,110 @@ def api_user_list():
 def api_user_options():
     if request.method == 'GET':
         data = request.args
-        user_id = data.get('id')
-        user = User.query.filter_by(id=user_id).first()
+        user_cd = data.get('user_cd')
+        user = User.query.filter_by(user_cd=user_cd).first()
         return jsonify({'code': status_code.OK, 'data': dict(user)})
     elif request.method == 'POST':
-        import random, string
-
-        data = request.get_json()
-
         user = User()
-        user.name = data.get('name')
-        user.email = data.get(
-            'email',
-            ''.join(random.choices(string.ascii_letters, k=random.randint(5, 10)))
-            + '@email.com',
-        )
-        user.password = make_password(data.get('password', 'password'))
-        user.position = data.get('position')
-        user.age = data.get('age', 0)
-        user.office = data.get('office')
-        user.salary = data.get('salary', 0)
-        user.gender = data.get('gender', '男')
-        user.status = data.get('status', '在职')
-        user.department_id = data.get('department_id', 1)
-
-        db.session.add(user)
-        db.session.commit()
+        if not _assignment_user(user, request):
+            return jsonify({'code': status_code.PARAMS_LACK, 'msg': '请确认参数是否完整'})
         return jsonify({'code': status_code.OK, 'data': dict(user)})
     elif request.method == 'PUT':
-        data = request.get_json()
-        user_id = data.get('id')
-
-        user = User.query.filter_by(id=user_id).first()
-        name = data.get('name')
-        age = data.get('age')
-        email = data.get('email')
-        password = data.get('password')
-        if password:
-            password = make_password(password)
-        position = data.get('position')
-        office = data.get('office')
-        salary = data.get('salary')
-        status = data.get('status')
-        gender = data.get('gender')
-        department_id = data.get('department_id')
-
-        if name:
-            user.name = name
-        if age is not None:
-            user.age = age
-        if email:
-            user.email = email
-        if password:
-            user.password = password
-        if position:
-            user.position = position
-        if office:
-            user.office = office
-        if salary:
-            user.salary = salary
-        if status:
-            user.status = status
-        if gender is not None:
-            user.gender = gender
-        if department_id:
-            user.department_id = department_id
-
-        db.session.commit()
+        data = request.form
+        user_cd = data.get('user_cd')
+        user = User.query.filter_by(user_cd=user_cd).first()
+        _assignment_user(user, request)
         return jsonify({'code': status_code.OK})
     elif request.method == 'DELETE':
         data = request.get_json()
-        user_id = data.get('id')
+        user_cd = data.get('user_cd')
 
-        user = User.query.filter_by(id=user_id).first()
+        user = User.query.filter(User.user_cd.in_(user_cd)).all()
         db.session.delete(user)
         db.session.commit()
         return jsonify({'code': status_code.OK})
+
+
+def _assignment_user(user_obj, request, mode='create'):
+    if not any((user_obj, request)):
+        return False
+    data = request.form
+    factory_cd = data.get('factory_cd')
+    user_cd = data.get('user_cd')
+    user_nm = data.get('user_nm')
+    password = data.get('password')
+    role_cd = data.get('role_cd')
+    duty_cd = data.get('duty_cd')
+    dep_cd = data.get('dep_cd')
+    comment = data.get('comment')
+    name = data.get('name')
+    sex = data.get('sex')
+    birthday = data.get('birthday')
+    address1 = data.get('address1')
+    address2 = data.get('address2')
+    phone = data.get('phone')
+    telephone = data.get('telephone')
+    email = data.get('email')
+    photo = request.files.get('photo')
+
+    if user_cd:
+        user_obj.user_cd = user_cd
+    if factory_cd:
+        user_obj.factory_cd = factory_cd
+    if user_nm:
+        user_obj.user_nm = user_nm
+    if password:
+        user_obj.password = make_password(password)
+    if role_cd:
+        sc = SystemCode.query.filter_by(
+            code_kbn=role_cd['code_kbn'], code_no=role_cd['code_no']
+        ).first()
+        user_obj.role_cd = sc.id
+    if duty_cd:
+        sc = SystemCode.query.filter_by(
+            code_kbn=duty_cd['code_kbn'], code_no=duty_cd['code_no']
+        ).first()
+        user_obj.duty_cd = duty_cd
+    if dep_cd:
+        user_obj.dep_cd = dep_cd
+    if comment:
+        user_obj.comment = comment
+    if mode == 'create' and not all(
+        user_cd, factory_cd, user_nm, role_cd, name, sex, birthday, phone
+    ):
+        db.session.add(user_obj)
+        db.session.commit()
+        info = UserInfo(user_cd=user_obj.user_cd)
+        db.session.add(info)
+        db.session.commit()
+    else:
+        return False
+    if name:
+        user_obj.info.name = name
+    if sex:
+        user_obj.info.sex = sex
+    if birthday:
+        user_obj.info.birthday = birthday
+    if address1:
+        user_obj.info.address1 = address1
+    if address2:
+        user_obj.info.address2 = address2
+    if phone:
+        user_obj.info.phone = phone
+    if telephone:
+        user_obj.info.telephone = telephone
+    if email:
+        user_obj.info.email = email
+    if photo:
+        ext = os.path.splitext(photo.filename)[-1]
+        filename = f'{gen_uuid_name()}{ext}'
+        path = STATIC_FOLDER / filename
+        photo.save(path)
+        user_obj.info.photo = f'{IMAGE_PREFIX}/{filename}'
+    if mode == 'create':
+        db.session.add(user_obj)
+    db.session.commit()
+    return True
 
 
 @apis.route('/user/login/', methods=['POST'])
