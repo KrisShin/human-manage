@@ -2,7 +2,14 @@ from config.settings import IMAGE_PREFIX, STATIC_FOLDER
 import os
 from server_src.wraps import generate_token
 from utils.util import check_password, make_password, get_parse_response, gen_uuid_name
-from server_src.models import Department, Factory, User, SystemCode, UserInfo
+from server_src.models import (
+    Department,
+    Factory,
+    TableDefine,
+    User,
+    SystemCode,
+    UserInfo,
+)
 from flask import Blueprint, jsonify, request
 from config import status_code
 from config.global_params import db
@@ -232,3 +239,17 @@ def api_factory_list():
 
     resp = get_parse_response(fac_list)
     return jsonify({'code': status_code.OK, 'data': resp})
+
+
+@apis.route('/table/list/', methods=['POST'])
+def api_table_list():
+    data = request.get_json()
+    page = data.get('page', 1)
+    page_size = data.get('pageSize', 10)
+    table_list = (
+        TableDefine.query.order_by(TableDefine.create_time.desc())
+        .paginate(page, page_size)
+        .items
+    )
+    table_list = get_parse_response(table_list)
+    return jsonify({'code': status_code.OK, 'data': table_list})

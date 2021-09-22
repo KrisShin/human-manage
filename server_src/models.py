@@ -268,6 +268,24 @@ class TableDefine(db.Model):
     doc = db.Column(db.String(256))
     comment = db.Column(db.String(1024))
 
+    def keys(self):
+        return (
+            'class_name',
+            'tbl_code',
+            'tbl_name',
+            'field_code',
+            'field_name',
+            'type',
+            'size',
+            'decimal',
+            'nullable',
+            'doc',
+            'comment',
+        )
+
+    def __getitem__(self, item):
+        return getattr(self, item)
+
 
 # class Calendar(BaseInfo):
 #     __tablename__ = 'm_calendar'
