@@ -1,3 +1,4 @@
+from operator import methodcaller
 from config.settings import IMAGE_PREFIX, STATIC_FOLDER
 import os
 from server_src.wraps import generate_token
@@ -100,14 +101,14 @@ def api_user_options():
         return jsonify({'code': status_code.OK, 'data': dict(user)})
     elif request.method == 'POST':
         user = User()
-        if not _assignment_user(user, request):
+        if not _assignment_user(user, request, mode='create'):
             return jsonify({'code': status_code.PARAMS_LACK, 'msg': '请确认参数是否完整'})
         return jsonify({'code': status_code.OK, 'data': dict(user)})
     elif request.method == 'PUT':
         data = request.form
         user_cd = data.get('user_cd')
         user = User.query.filter_by(user_cd=user_cd).first()
-        _assignment_user(user, request)
+        _assignment_user(user, request, mode='edit')
         return jsonify({'code': status_code.OK})
     elif request.method == 'DELETE':
         data = request.get_json()
@@ -132,7 +133,7 @@ def _assignment_user(user_obj, request, mode='create'):
     dep_cd = data.get('dep_cd')
     comment = data.get('comment')
     name = data.get('name')
-    sex = data.get('sex')
+    sex = int(data.get('sex'))
     birthday = data.get('birthday')
     address1 = data.get('address1')
     address2 = data.get('address2')
@@ -197,6 +198,7 @@ def _assignment_user(user_obj, request, mode='create'):
         user_obj.info.photo = f'{IMAGE_PREFIX}/{filename}'
     if mode == 'create':
         db.session.add(user_obj)
+
     db.session.commit()
     return True
 
@@ -241,11 +243,11 @@ def api_factory_list():
     return jsonify({'code': status_code.OK, 'data': resp})
 
 
-@apis.route('/table/list/', methods=['POST'])
+@apis.route('/table/list/', methods=['GET'])
 def api_table_list():
-    data = request.get_json()
-    page = data.get('page', 1)
-    page_size = data.get('pageSize', 10)
+    data = request.args
+    page = int(data.get('page', 1))
+    page_size = int(data.get('pageSize', 10))
     table_list = (
         TableDefine.query.order_by(TableDefine.create_time.desc())
         .paginate(page, page_size)
@@ -253,3 +255,75 @@ def api_table_list():
     )
     table_list = get_parse_response(table_list)
     return jsonify({'code': status_code.OK, 'data': table_list})
+
+
+@apis.route('/table/', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def api_table_list():
+    if request.method == 'GET':
+        data = request.args
+        tbl_code = data.get('tbl_code')
+        table = TableDefine.query.filter_by(tbl_code=tbl_code).first()
+        return jsonify({'code': status_code.OK, 'data': dict(table)})
+    elif request.method == 'POST':
+        table_obj = TableDefine()
+        if not _assignment_table(table_obj, request, 'create'):
+            return jsonify({'code': status_code.PARAMS_LACK, 'msg': '请确认参数是否完整'})
+        return jsonify({'code': status_code, 'data': dict(table_obj)})
+    elif request.method == 'PUT':
+        data = request.get_json()
+        table_obj = TableDefine.query.filter_by(tbl_code=data.get('tbl_code')).first()
+        _assignment_table(table_obj, request, 'edit')
+        return jsonify({'code': status_code.OK, 'data': dict(table_obj)})
+    elif request.method == 'DELETE':
+        data = request.args
+        tbl_code = data.get('tbl_code')
+        table = TableDefine.query.filter(TableDefine.tbl_code.in_(tbl_code))
+        db.session.delete(table)
+        db.session.commit()
+        return jsonify({'code': status_code})
+
+
+def _assignment_table(table_obj, request, mode='create'):
+    data = request.get_json()
+    class_name = data.get('class_name')
+    tbl_code = data.get('tbl_code')
+    tbl_name = data.get('tbl_name')
+    field_code = data.get('field_code')
+    field_name = data.get('field_name')
+    type = data.get('type')
+    size = data.get('size')
+    decimal = data.get('decimal')
+    nullable = data.get('nullable')
+    doc = data.get('doc')
+    comment = data.get('comment')
+
+    if not all((class_name, tbl_code)):
+        return False
+
+    if class_name:
+        table_obj.class_name = class_name
+    if tbl_code:
+        table_obj.tbl_code = tbl_code
+    if tbl_name:
+        table_obj.tbl_name = tbl_name
+    if field_code:
+        table_obj.field_code = field_code
+    if field_name:
+        table_obj.field_name = field_name
+    if type:
+        table_obj.type = type
+    if size:
+        table_obj.size = size
+    if decimal:
+        table_obj.decimal = decimal
+    if nullable:
+        table_obj.nullable = nullable
+    if doc:
+        table_obj.doc = doc
+    if comment:
+        table_obj.comment = comment
+
+    if mode == 'create':
+        db.session.add(table_obj)
+    db.session.commit()
+    return True
