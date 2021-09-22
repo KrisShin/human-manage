@@ -258,7 +258,7 @@ def api_table_list():
 
 
 @apis.route('/table/', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def api_table_list():
+def api_table_oprations():
     if request.method == 'GET':
         data = request.args
         tbl_code = data.get('tbl_code')
