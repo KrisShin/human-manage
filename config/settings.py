@@ -1,10 +1,10 @@
-import os
 import socket
+from pathlib import Path
 
 # project root directory
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path.cwd()
 
-STATIC_FOLDER = os.path.join(BASE_DIR, 'statics')
+STATIC_FOLDER = BASE_DIR / 'statics'
 STATIC_PATH = '/static'
 
 # upload file absolute directory

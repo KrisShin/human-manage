@@ -15,6 +15,7 @@ from flask import Blueprint, jsonify, request
 from config import status_code
 from config.global_params import db
 from datetime import datetime
+import json
 
 apis = Blueprint('apis', __name__, url_prefix='/api')
 
@@ -128,8 +129,8 @@ def _assignment_user(user_obj, request, mode='create'):
     user_cd = data.get('user_cd')
     user_nm = data.get('user_nm')
     password = data.get('password')
-    role_cd = data.get('role_cd')
-    duty_cd = data.get('duty_cd')
+    role_cd = json.loads(data.get('role_cd', '{}'))
+    duty_cd = json.loads(data.get('duty_cd', '{}'))
     dep_cd = data.get('dep_cd')
     comment = data.get('comment')
     name = data.get('name')
@@ -159,21 +160,27 @@ def _assignment_user(user_obj, request, mode='create'):
         sc = SystemCode.query.filter_by(
             code_kbn=duty_cd['code_kbn'], code_no=duty_cd['code_no']
         ).first()
-        user_obj.duty_cd = duty_cd
+        user_obj.duty_cd = sc.id
     if dep_cd:
         user_obj.dep_cd = dep_cd
     if comment:
         user_obj.comment = comment
-    if mode == 'create' and not all(
-        user_cd, factory_cd, user_nm, role_cd, name, sex, birthday, phone
-    ):
-        db.session.add(user_obj)
-        db.session.commit()
-        info = UserInfo(user_cd=user_obj.user_cd)
-        db.session.add(info)
-        db.session.commit()
-    else:
-        return False
+    if mode == 'create':
+        if all((user_cd, factory_cd, user_nm, role_cd, name, sex, birthday, phone)):
+            db.session.add(user_obj)
+            db.session.commit()
+            info = UserInfo(
+                user_cd=user_obj.user_cd,
+                factory_cd=factory_cd,
+                name=name,
+                sex=sex,
+                birthday=birthday,
+                phone=phone,
+            )
+            db.session.add(info)
+            db.session.commit()
+        else:
+            return False
     if name:
         user_obj.info.name = name
     if sex:
@@ -196,8 +203,6 @@ def _assignment_user(user_obj, request, mode='create'):
         path = STATIC_FOLDER / filename
         photo.save(path)
         user_obj.info.photo = f'{IMAGE_PREFIX}/{filename}'
-    if mode == 'create':
-        db.session.add(user_obj)
 
     db.session.commit()
     return True

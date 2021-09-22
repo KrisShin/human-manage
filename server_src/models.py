@@ -195,9 +195,9 @@ class User(BaseInfo):
             time = getattr(self, item)
             return str(time)[:19] if time else time
         elif item == 'department':
-            return self.department.name if self.department else None
+            return self.department.dep_name if self.department else None
         elif item == 'factory':
-            return self.factory.name if self.factory else None
+            return self.factory.factory_nm if self.factory else None
         elif item in ('abort', 'role', 'duty'):
             return self.get_system_code_nm(item)
         elif item in (
