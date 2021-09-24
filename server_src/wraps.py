@@ -31,6 +31,8 @@ def auth(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         auth = request.headers.get('Authorization')
+        if not auth:
+            return jsonify({'code': status_code.USER_INVALID_TOKEN, 'msg': '无效Token'})
         status, auth_s, _, role = jwt_auth(auth.encode())
         if status == 200 and auth_s and role:
             return func(*args, **kwargs)

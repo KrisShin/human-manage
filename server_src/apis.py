@@ -1,7 +1,6 @@
-from operator import methodcaller
 from config.settings import IMAGE_PREFIX, STATIC_FOLDER
 import os
-from server_src.wraps import generate_token
+from server_src.wraps import auth, generate_token
 from utils.util import check_password, make_password, get_parse_response, gen_uuid_name
 from server_src.models import (
     Department,
@@ -152,7 +151,7 @@ def _assignment_user(user_obj, request, mode='create'):
         user_obj.factory_cd = factory_cd
     if user_nm:
         user_obj.user_nm = user_nm
-    if mode=='edit' and password:
+    if mode == 'edit' and password:
         user_obj.password = make_password(password)
     elif mode == 'create':
         user_obj.password = make_password(password or 'User12345')
@@ -353,3 +352,9 @@ def _assignment_table(table_obj, request, mode='create'):
         db.session.add(table_obj)
     db.session.commit()
     return True
+
+
+@apis.route('/authcheck/', methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
+@auth
+def auth_check():
+    return jsonify({'code': status_code.OK, 'msg': '校验成功'})
