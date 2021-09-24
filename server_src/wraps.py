@@ -33,7 +33,7 @@ def auth(func):
         auth = request.headers.get('Authorization')
         if not auth:
             return jsonify({'code': status_code.USER_INVALID_TOKEN, 'msg': '无效Token'})
-        status, auth_s, _, role = jwt_auth(auth.encode())
+        status, auth_s, _, role, _ = jwt_auth(auth.encode())
         if status == 200 and auth_s and role:
             return func(*args, **kwargs)
         else:
@@ -54,7 +54,7 @@ def current_user_uid_role(request, need_role=False):
 
 def generate_token(uid, role='student'):
     return jwt.encode(
-        {'uid': uid, 'exp': datetime.now() + timedelta(hours=3), 'role': role},
+        {'uid': uid, 'exp': datetime.now() + timedelta(hours=8), 'role': role},
         KEY,
         'HS256',
     )

@@ -20,6 +20,7 @@ apis = Blueprint('apis', __name__, url_prefix='/api')
 
 
 @apis.route('/user/role/list/', methods=['GET'])
+@auth
 def api_user_role_list():
     items = SystemCode.query.filter_by(code_kbn='01').all()
     resp = get_parse_response(items)
@@ -28,6 +29,7 @@ def api_user_role_list():
 
 
 @apis.route('/user/duty/list/', methods=['GET'])
+@auth
 def api_user_duty_list():
     items = SystemCode.query.filter_by(code_kbn='02').all()
     resp = get_parse_response(items)
@@ -36,6 +38,7 @@ def api_user_duty_list():
 
 
 @apis.route('/user/abort/list/', methods=['GET'])
+@auth
 def api_user_abort_list():
     items = SystemCode.query.filter_by(code_kbn='00').all()
     resp = get_parse_response(items)
@@ -44,6 +47,7 @@ def api_user_abort_list():
 
 
 @apis.route('/user/list/', methods=['POST'])
+@auth
 def api_user_list():
     data = request.get_json()
     page = data.get('page', 1)
@@ -93,6 +97,7 @@ def api_user_list():
 
 
 @apis.route('/user/', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@auth
 def api_user_options():
     if request.method == 'GET':
         data = request.args
@@ -136,7 +141,7 @@ def _assignment_user(user_obj, request, mode='create'):
     dep_cd = data.get('dep_cd')
     comment = data.get('comment')
     name = data.get('name')
-    sex = int(data.get('sex'))
+    sex = data.get('sex')
     birthday = data.get('birthday')
     address1 = data.get('address1')
     address2 = data.get('address2')
@@ -191,7 +196,7 @@ def _assignment_user(user_obj, request, mode='create'):
     if name:
         user_obj.info.name = name
     if sex:
-        user_obj.info.sex = sex
+        user_obj.info.sex = int(sex)
     if birthday:
         user_obj.info.birthday = birthday
     if address1:
@@ -216,6 +221,7 @@ def _assignment_user(user_obj, request, mode='create'):
 
 
 @apis.route('/upload/', methods=['POST'])
+@auth
 def api_upload():
     photo = request.files.get('file')
     if not photo:
@@ -229,7 +235,7 @@ def api_upload():
 
 
 @apis.route('/user/login/', methods=['POST'])
-def student_login():
+def api_user_login():
     '''Login user by phone and password.'''
 
     data = request.get_json()
@@ -240,7 +246,7 @@ def student_login():
     if not user_obj:
         return jsonify({'code': status_code.USER_NOT_EXIST, 'msg': '该学生不存在'})
 
-    if not check_password(password, user_obj.password):
+    if not check_password(user_obj.password, password):
         return jsonify({'code': status_code.USER_WRONG_PASSWORD, 'msg': '密码错误'})
 
     db.session.commit()
@@ -251,6 +257,7 @@ def student_login():
 
 
 @apis.route('/department/list/', methods=['GET'])
+@auth
 def api_department_list():
     data = request.args
     factory_cd = data.get('factory_cd')
@@ -261,6 +268,7 @@ def api_department_list():
 
 
 @apis.route('/factory/list/', methods=['GET'])
+@auth
 def api_factory_list():
     fac_list = Factory.query.all()
 
@@ -269,6 +277,7 @@ def api_factory_list():
 
 
 @apis.route('/table/list/', methods=['GET'])
+@auth
 def api_table_list():
     data = request.args
     page = int(data.get('page', 1))
@@ -283,6 +292,7 @@ def api_table_list():
 
 
 @apis.route('/table/', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@auth
 def api_table_oprations():
     if request.method == 'GET':
         data = request.args
