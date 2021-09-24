@@ -20,7 +20,7 @@ apis = Blueprint('apis', __name__, url_prefix='/api')
 
 
 @apis.route('/user/role/list/', methods=['GET'])
-# @auth
+@auth
 def api_user_role_list():
     items = SystemCode.query.filter_by(code_kbn='01').all()
     resp = get_parse_response(items)
@@ -29,7 +29,7 @@ def api_user_role_list():
 
 
 @apis.route('/user/duty/list/', methods=['GET'])
-# @auth
+@auth
 def api_user_duty_list():
     items = SystemCode.query.filter_by(code_kbn='02').all()
     resp = get_parse_response(items)
@@ -38,7 +38,7 @@ def api_user_duty_list():
 
 
 @apis.route('/user/abort/list/', methods=['GET'])
-# @auth
+@auth
 def api_user_abort_list():
     items = SystemCode.query.filter_by(code_kbn='00').all()
     resp = get_parse_response(items)
