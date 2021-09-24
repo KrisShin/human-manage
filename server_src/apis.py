@@ -208,6 +208,18 @@ def _assignment_user(user_obj, request, mode='create'):
     return True
 
 
+@apis.route('/upload/', methods=['POST'])
+def api_upload():
+    print(request.files)
+    photo = request.files.get('photo')
+    ext = os.path.splitext(photo.filename)[-1]
+    filename = f'{gen_uuid_name()}{ext}'
+    path = STATIC_FOLDER / filename
+    photo.save(path)
+    photo_url = f'{IMAGE_PREFIX}/{filename}'
+    return jsonify({'code': 200, 'data': photo_url})
+
+
 @apis.route('/user/login/', methods=['POST'])
 def student_login():
     '''Login user by phone and password.'''
