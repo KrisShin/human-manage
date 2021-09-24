@@ -152,8 +152,10 @@ def _assignment_user(user_obj, request, mode='create'):
         user_obj.factory_cd = factory_cd
     if user_nm:
         user_obj.user_nm = user_nm
-    if password:
+    if mode=='edit' and password:
         user_obj.password = make_password(password)
+    elif mode == 'create':
+        user_obj.password = make_password(password or 'User12345')
     if role_cd:
         sc = SystemCode.query.filter_by(
             code_kbn=role_cd['code_kbn'], code_no=role_cd['code_no']
