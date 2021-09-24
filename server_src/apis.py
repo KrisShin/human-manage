@@ -144,7 +144,7 @@ def _assignment_user(user_obj, request, mode='create'):
     phone = data.get('phone')
     telephone = data.get('telephone')
     email = data.get('email')
-    photo = request.files.get('photo')
+    photo = data.get('photo')
 
     if user_cd:
         user_obj.user_cd = user_cd
@@ -204,11 +204,11 @@ def _assignment_user(user_obj, request, mode='create'):
     if email:
         user_obj.info.email = email
     if photo:
-        ext = os.path.splitext(photo.filename)[-1]
-        filename = f'{gen_uuid_name()}{ext}'
-        path = STATIC_FOLDER / filename
-        photo.save(path)
-        user_obj.info.photo = f'{IMAGE_PREFIX}/{filename}'
+        # ext = os.path.splitext(photo.filename)[-1]
+        # filename = f'{gen_uuid_name()}{ext}'
+        # path = STATIC_FOLDER / filename
+        # photo.save(path)
+        user_obj.info.photo = photo
 
     db.session.commit()
     return 1
@@ -217,12 +217,14 @@ def _assignment_user(user_obj, request, mode='create'):
 @apis.route('/upload/', methods=['POST'])
 def api_upload():
     photo = request.files.get('file')
+    if not photo:
+        return jsonify({'code': status_code.NO_FILE_UPLOAD, 'msg': '没有上传文件'})
     ext = os.path.splitext(photo.filename)[-1]
     filename = f'{gen_uuid_name()}{ext}'
     path = STATIC_FOLDER / filename
     photo.save(path)
     photo_url = f'{IMAGE_PREFIX}/{filename}'
-    return jsonify({'code': 200, 'data': photo_url})
+    return jsonify({'code': status_code.OK, 'data': photo_url})
 
 
 @apis.route('/user/login/', methods=['POST'])

@@ -58,3 +58,5 @@ ADDR_NOT_EXISIT = 1103
 # order module
 # 提交订单没有菜品
 ORDER_EMPTY_CART = 1201
+
+NO_FILE_UPLOAD = 3001
