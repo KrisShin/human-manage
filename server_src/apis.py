@@ -152,7 +152,7 @@ def _assignment_user(user_obj, request, mode='create'):
         user_obj.factory_cd = factory_cd
     if user_nm:
         user_obj.user_nm = user_nm
-    if mode=='edit' and password:
+    if mode == 'edit' and password:
         user_obj.password = make_password(password)
     elif mode == 'create':
         user_obj.password = make_password(password or 'User12345')
@@ -241,7 +241,7 @@ def student_login():
     if not user_obj:
         return jsonify({'code': status_code.USER_NOT_EXIST, 'msg': '该学生不存在'})
 
-    if not check_password(password, user_obj.password):
+    if not check_password(user_obj.password, password):
         return jsonify({'code': status_code.USER_WRONG_PASSWORD, 'msg': '密码错误'})
 
     db.session.commit()
