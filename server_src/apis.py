@@ -102,8 +102,11 @@ def api_user_options():
         return jsonify({'code': status_code.OK, 'data': dict(user)})
     elif request.method == 'POST':
         user = User()
-        if not _assignment_user(user, request, mode='create'):
+        res_code = _assignment_user(user, request, mode='create')
+        if res_code == 0:
             return jsonify({'code': status_code.PARAMS_LACK, 'msg': '请确认参数是否完整'})
+        elif res_code == -1:
+            return jsonify({'code': status_code.USER_EXISTED, 'msg': 'user_cd已存在'})
         return jsonify({'code': status_code.OK, 'data': dict(user)})
     elif request.method == 'PUT':
         data = request.form
@@ -167,6 +170,9 @@ def _assignment_user(user_obj, request, mode='create'):
         user_obj.comment = comment
     if mode == 'create':
         if all((user_cd, factory_cd, user_nm, role_cd, name, sex, birthday, phone)):
+            user_exisit = User.query.filter_by(user_cd=user_cd).first()
+            if user_exisit:
+                return -1
             db.session.add(user_obj)
             db.session.commit()
             info = UserInfo(
@@ -180,7 +186,7 @@ def _assignment_user(user_obj, request, mode='create'):
             db.session.add(info)
             db.session.commit()
         else:
-            return False
+            return 0
     if name:
         user_obj.info.name = name
     if sex:
@@ -205,13 +211,12 @@ def _assignment_user(user_obj, request, mode='create'):
         user_obj.info.photo = f'{IMAGE_PREFIX}/{filename}'
 
     db.session.commit()
-    return True
+    return 1
 
 
 @apis.route('/upload/', methods=['POST'])
 def api_upload():
-    print(request.files)
-    photo = request.files.get('photo')
+    photo = request.files.get('file')
     ext = os.path.splitext(photo.filename)[-1]
     filename = f'{gen_uuid_name()}{ext}'
     path = STATIC_FOLDER / filename
