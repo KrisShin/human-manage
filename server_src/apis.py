@@ -1,6 +1,6 @@
 from config.settings import IMAGE_PREFIX, STATIC_FOLDER
 import os
-from server_src.wraps import auth, generate_token
+from server_src.wraps import auth, current_user_uid_role, generate_token
 from utils.util import check_password, make_password, get_parse_response, gen_uuid_name
 from server_src.models import (
     Department,
@@ -102,6 +102,8 @@ def api_user_options():
     if request.method == 'GET':
         data = request.args
         user_cd = data.get('user_cd')
+        if not user_cd:
+            user_cd = current_user_uid_role(request)
         user = User.query.filter_by(user_cd=user_cd).first()
         return jsonify({'code': status_code.OK, 'data': dict(user)})
     elif request.method == 'POST':
@@ -122,8 +124,7 @@ def api_user_options():
         data = request.get_json()
         user_cd = data.get('user_cd')
 
-        user = User.query.filter(User.user_cd.in_(user_cd)).all()
-        db.session.delete(user)
+        user = User.query.filter(User.user_cd.in_(user_cd)).delete()
         db.session.commit()
         return jsonify({'code': status_code.OK})
 

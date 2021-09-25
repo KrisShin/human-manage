@@ -195,9 +195,9 @@ class User(BaseInfo):
             time = getattr(self, item)
             return str(time)[:19] if time else time
         elif item == 'department':
-            return self.department.dep_name if self.department else None
+            return dict(self.department) if self.department else None
         elif item == 'factory':
-            return self.factory.factory_nm if self.factory else None
+            return dict(self.factory) if self.factory else None
         elif item in ('abort', 'role', 'duty'):
             return self.get_system_code_nm(item)
         elif item in (
@@ -218,7 +218,7 @@ class User(BaseInfo):
     def get_system_code_nm(self, item):
         item_key = self.PROP_MAP[item]
         res = SystemCode.query.filter_by(id=getattr(self, item_key)).first()
-        return res.code_nm if res else res
+        return dict(res) if res else res
 
 
 class UserInfo(BaseInfo):
