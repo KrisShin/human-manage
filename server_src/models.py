@@ -205,7 +205,6 @@ class User(BaseInfo):
             'address1',
             'address2',
             'photo',
-            'comment',
         ):
             return getattr(self.info, item)
         return getattr(self, item)
