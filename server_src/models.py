@@ -193,7 +193,7 @@ class User(BaseInfo):
             return dict(self.department) if self.department else None
         elif item == 'factory_cd':
             return dict(self.factory) if self.factory else None
-        elif item in ('abort', 'role_cd', 'duty_cd'):
+        elif item in ('role_cd', 'duty_cd'):
             return self.get_system_code_nm(item)
         elif item in (
             'name',
