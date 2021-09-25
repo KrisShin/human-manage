@@ -121,10 +121,15 @@ def api_user_options():
         _assignment_user(user, request, mode='edit')
         return jsonify({'code': status_code.OK})
     elif request.method == 'DELETE':
+        cur_user_cd = current_user_uid_role(request)
         data = request.get_json()
-        user_cd = data.get('user_cd')
+        user_cds = data.get('user_cd')
+        if cur_user_cd in user_cds:
+            return jsonify(
+                {'code': status_code.USER_INVALID_OPERATION, 'msg': '不能删除自己'}
+            )
 
-        user = User.query.filter(User.user_cd.in_(user_cd)).delete()
+        user = User.query.filter(User.user_cd.in_(user_cds)).delete()
         db.session.commit()
         return jsonify({'code': status_code.OK})
 

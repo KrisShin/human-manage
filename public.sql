@@ -12,7 +12,7 @@
  Target Server Version : 130004
  File Encoding         : 65001
 
- Date: 21/09/2021 21:26:07
+ Date: 25/09/2021 13:34:11
 */
 
 
@@ -237,8 +237,18 @@ CREATE TABLE "public"."m_user" (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO "public"."m_user" VALUES ('010001', '测试1', 'LBxZmYVrnG+Z+qC2xuTX/Q==
-', NULL, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-09-21 21:11:04.148051', NULL);
+INSERT INTO "public"."m_user" VALUES ('010001', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
+', NULL, 6, NULL, NULL, '01', NULL, NULL, NULL, NULL, '2021-09-25 13:32:45.652056', NULL, NULL);
+INSERT INTO "public"."m_user" VALUES ('010002', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
+', NULL, 6, NULL, NULL, '01', NULL, NULL, NULL, NULL, '2021-09-25 13:32:57.261326', NULL, NULL);
+INSERT INTO "public"."m_user" VALUES ('010003', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
+', NULL, 6, NULL, NULL, '01', NULL, NULL, NULL, NULL, '2021-09-25 13:33:01.076013', NULL, NULL);
+INSERT INTO "public"."m_user" VALUES ('010004', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
+', NULL, 6, NULL, NULL, '01', NULL, NULL, NULL, NULL, '2021-09-25 13:33:04.632818', NULL, NULL);
+INSERT INTO "public"."m_user" VALUES ('010005', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
+', NULL, 6, NULL, NULL, '01', NULL, NULL, NULL, NULL, '2021-09-25 13:33:08.260647', NULL, NULL);
+INSERT INTO "public"."m_user" VALUES ('010006', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
+', NULL, 6, NULL, NULL, '01', NULL, NULL, NULL, NULL, '2021-09-25 13:33:12.11917', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for m_user_info
@@ -270,7 +280,12 @@ CREATE TABLE "public"."m_user_info" (
 -- ----------------------------
 -- Records of m_user_info
 -- ----------------------------
-INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-21 20:00:58', NULL, NULL, 3, 'nicktestname1', 1, '2021-09-21 20:00:34', '1231231231', '1231231231', 'email@test.com', NULL, '01', '010001', NULL, NULL, NULL);
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:32:45.676888', '2021-09-25 13:32:45.699138', NULL, 12, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010001', NULL, NULL, NULL);
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:32:57.271142', '2021-09-25 13:32:57.281751', NULL, 13, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010002', NULL, NULL, NULL);
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:33:01.089105', '2021-09-25 13:33:01.105994', NULL, 14, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010003', NULL, NULL, NULL);
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:33:04.641911', '2021-09-25 13:33:04.653943', NULL, 15, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010004', NULL, NULL, NULL);
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:33:08.271425', '2021-09-25 13:33:08.284858', NULL, 16, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010005', NULL, NULL, NULL);
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:33:12.128707', '2021-09-25 13:33:12.140976', NULL, 17, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010006', NULL, NULL, NULL);
 
 -- ----------------------------
 -- Alter sequences owned by
@@ -284,7 +299,7 @@ SELECT setval('"public"."m_system_code_id_seq"', 59, true);
 -- ----------------------------
 ALTER SEQUENCE "public"."m_user_info_id_seq"
 OWNED BY "public"."m_user_info"."id";
-SELECT setval('"public"."m_user_info_id_seq"', 4, true);
+SELECT setval('"public"."m_user_info_id_seq"', 18, true);
 
 -- ----------------------------
 -- Primary Key structure for table alembic_version
