@@ -121,11 +121,6 @@ class Department(BaseInfo):
 
 class User(BaseInfo):
     __tablename__ = 'm_user'
-    PROP_MAP = {
-        'abort': 'abort_div',
-        'role': 'role_cd',
-        'duty': 'duty_cd',
-    }
 
     user_cd = db.Column(db.String(6), primary_key=True)
     user_nm = db.Column(db.String(64))  # 用户昵称
@@ -171,11 +166,11 @@ class User(BaseInfo):
         return (
             'user_cd',  # 用户id
             'user_nm',  # 用户姓名
-            'role',  # 角色
-            'duty',  # 班次(早班/晚班)
-            'abort',  # 是否弃用
-            'factory',  # 所在工厂
-            'department',  # 所在部门
+            'role_cd',  # 角色
+            'duty_cd',  # 班次(早班/晚班)
+            # 'abort_div',  # 是否弃用
+            'factory_cd',  # 所在工厂
+            'dep_cd',  # 所在部门
             'create_time',  # 创建时间
             'update_time',  # 更新时间
             'name',  # 昵称
@@ -194,11 +189,11 @@ class User(BaseInfo):
         if item in ('create_time', 'update_time'):
             time = getattr(self, item)
             return str(time)[:19] if time else time
-        elif item == 'department':
+        elif item == 'dep_cd':
             return dict(self.department) if self.department else None
-        elif item == 'factory':
+        elif item == 'factory_cd':
             return dict(self.factory) if self.factory else None
-        elif item in ('abort', 'role', 'duty'):
+        elif item in ('abort', 'role_cd', 'duty_cd'):
             return self.get_system_code_nm(item)
         elif item in (
             'name',
@@ -216,8 +211,7 @@ class User(BaseInfo):
         return getattr(self, item)
 
     def get_system_code_nm(self, item):
-        item_key = self.PROP_MAP[item]
-        res = SystemCode.query.filter_by(id=getattr(self, item_key)).first()
+        res = SystemCode.query.filter_by(id=getattr(self, item)).first()
         return dict(res) if res else res
 
 
