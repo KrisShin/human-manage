@@ -1,10 +1,10 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : postgres_tencent_LY
+ Source Server         : WSL_postgresql
  Source Server Type    : PostgreSQL
  Source Server Version : 130004
- Source Host           : 101.34.137.128:35432
+ Source Host           : 127.0.0.1:35432
  Source Catalog        : humanmanage
  Source Schema         : public
 
@@ -12,7 +12,7 @@
  Target Server Version : 130004
  File Encoding         : 65001
 
- Date: 27/09/2021 00:02:36
+ Date: 27/09/2021 00:13:51
 */
 
 
@@ -50,7 +50,7 @@ CREATE TABLE "public"."alembic_version" (
 -- ----------------------------
 -- Records of alembic_version
 -- ----------------------------
-INSERT INTO "public"."alembic_version" VALUES ('66b29a15bd91');
+INSERT INTO "public"."alembic_version" VALUES ('96edc2109d3c');
 
 -- ----------------------------
 -- Table structure for m_department
@@ -193,17 +193,23 @@ INSERT INTO "public"."m_system_code" VALUES (NULL, NULL, NULL, NULL, NULL, NULL,
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."m_table_define";
 CREATE TABLE "public"."m_table_define" (
-  "class_name" varchar(2) COLLATE "pg_catalog"."default" NOT NULL,
+  "update_user_id" varchar(32) COLLATE "pg_catalog"."default",
+  "update_count" int4,
+  "update_pgid" varchar(512) COLLATE "pg_catalog"."default",
+  "create_time" timestamp(6),
+  "update_time" timestamp(6),
+  "class_name" varchar(64) COLLATE "pg_catalog"."default",
   "tbl_code" varchar(20) COLLATE "pg_catalog"."default" NOT NULL,
   "tbl_name" varchar(20) COLLATE "pg_catalog"."default",
-  "field_code" varchar(20) COLLATE "pg_catalog"."default",
+  "field_code" varchar(20) COLLATE "pg_catalog"."default" NOT NULL,
   "field_name" varchar(20) COLLATE "pg_catalog"."default",
   "type" varchar(20) COLLATE "pg_catalog"."default",
   "size" varchar(20) COLLATE "pg_catalog"."default",
   "decimal" int4,
   "nullable" varchar(1) COLLATE "pg_catalog"."default",
   "doc" varchar(256) COLLATE "pg_catalog"."default",
-  "comment" varchar(1024) COLLATE "pg_catalog"."default"
+  "comment" varchar(1024) COLLATE "pg_catalog"."default",
+  "key" varchar(1) COLLATE "pg_catalog"."default"
 )
 ;
 
@@ -216,37 +222,35 @@ CREATE TABLE "public"."m_table_define" (
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."m_user";
 CREATE TABLE "public"."m_user" (
+  "update_user_id" varchar(32) COLLATE "pg_catalog"."default",
+  "update_count" int4,
+  "update_pgid" varchar(512) COLLATE "pg_catalog"."default",
+  "create_time" timestamp(6),
+  "update_time" timestamp(6),
+  "comment" text COLLATE "pg_catalog"."default",
   "user_cd" varchar(6) COLLATE "pg_catalog"."default" NOT NULL,
   "user_nm" varchar(64) COLLATE "pg_catalog"."default",
   "password" varchar(512) COLLATE "pg_catalog"."default",
   "create_user_id" varchar(6) COLLATE "pg_catalog"."default",
   "role_cd" int4,
   "duty_cd" int4,
-  "dep_cd" varchar(10) COLLATE "pg_catalog"."default",
-  "factory_cd" varchar(2) COLLATE "pg_catalog"."default",
   "abort_div" int4,
-  "update_user_id" varchar(32) COLLATE "pg_catalog"."default",
-  "update_count" int4,
-  "update_pgid" varchar(512) COLLATE "pg_catalog"."default",
-  "create_time" timestamp(6),
-  "update_time" timestamp(6),
-  "comment" text COLLATE "pg_catalog"."default"
+  "dep_cd" varchar(10) COLLATE "pg_catalog"."default",
+  "factory_cd" varchar(2) COLLATE "pg_catalog"."default"
 )
 ;
 
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO "public"."m_user" VALUES ('3121', '打算的', 'LBxZmYVrnG+Z+qC2xuTX/Q==
-', NULL, 5, 8, '010002', '01', 1, NULL, NULL, NULL, '2021-09-24 00:54:07.725914', NULL, '单方事故水电费');
-INSERT INTO "public"."m_user" VALUES ('312', '打算的', 'LBxZmYVrnG+Z+qC2xuTX/Q==
-', NULL, 5, 7, '020001', '02', 1, NULL, NULL, NULL, '2021-09-24 00:52:21.606996', '2021-09-25 00:11:46.807703', '放松放松白名单烦恼');
-INSERT INTO "public"."m_user" VALUES ('010006', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
-', NULL, 6, NULL, NULL, '01', 2, NULL, NULL, NULL, '2021-09-25 13:38:17.847828', NULL, NULL);
-INSERT INTO "public"."m_user" VALUES ('010007', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
-', NULL, 6, NULL, NULL, '01', 1, NULL, NULL, NULL, '2021-09-25 13:38:22.62262', NULL, NULL);
-INSERT INTO "public"."m_user" VALUES ('010001', '测试1', 'LBxZmYVrnG+Z+qC2xuTX/Q==
-', NULL, 4, 8, '010001', '01', 1, NULL, NULL, NULL, NULL, '2021-09-26 13:59:52.33956', 'asdfaasdadasd');
+INSERT INTO "public"."m_user" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:13.50034', NULL, NULL, '010001', 'testor', 'LBxZmYVrnG+Z+qC2xuTX/Q==
+', NULL, 6, NULL, 1, NULL, '02');
+INSERT INTO "public"."m_user" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:28.732013', NULL, NULL, '010002', 'testor', 'LBxZmYVrnG+Z+qC2xuTX/Q==
+', NULL, 6, NULL, 1, NULL, '02');
+INSERT INTO "public"."m_user" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:32.14875', NULL, NULL, '010003', 'testor', 'LBxZmYVrnG+Z+qC2xuTX/Q==
+', NULL, 6, NULL, 1, NULL, '02');
+INSERT INTO "public"."m_user" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:35.595719', NULL, NULL, '010004', 'testor', 'LBxZmYVrnG+Z+qC2xuTX/Q==
+', NULL, 6, NULL, 1, NULL, '02');
 
 -- ----------------------------
 -- Table structure for m_user_info
@@ -266,37 +270,36 @@ CREATE TABLE "public"."m_user_info" (
   "phone" varchar(12) COLLATE "pg_catalog"."default" NOT NULL,
   "telephone" varchar(12) COLLATE "pg_catalog"."default",
   "email" varchar(128) COLLATE "pg_catalog"."default",
+  "address1" varchar(256) COLLATE "pg_catalog"."default",
+  "address2" varchar(256) COLLATE "pg_catalog"."default",
   "photo" varchar(1024) COLLATE "pg_catalog"."default",
   "factory_cd" varchar(2) COLLATE "pg_catalog"."default",
   "user_cd" varchar(6) COLLATE "pg_catalog"."default",
-  "abort_div" int4,
-  "address1" varchar(256) COLLATE "pg_catalog"."default",
-  "address2" varchar(256) COLLATE "pg_catalog"."default"
+  "abort_div" int4
 )
 ;
 
 -- ----------------------------
 -- Records of m_user_info
 -- ----------------------------
-INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-24 00:54:07.734533', '2021-09-24 00:54:07.744952', NULL, 6, '阿萨德饭', 2, '2021-09-28 00:00:00', '5423445324', '5435', '·23412423', 'http://101.34.137.128:9100/static/9d453a73e52048da8cf61da3ff5601a6.jpg', '01', '3121', NULL, '任务分公司的', '大沙发上');
-INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-24 00:52:21.618547', '2021-09-25 00:11:46.811003', NULL, 5, 'DASD', 1, '2021-09-23 00:00:00', '4324', '423', '1414', 'http://101.34.137.128:9100/static/5f62199e7474491fba908e73396dab16.jpg', '01', '312', NULL, '发送到发斯蒂芬', 'SDASD ');
-INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:38:17.856969', '2021-09-25 13:38:17.869553', NULL, 7, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010006', NULL, NULL, NULL);
-INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:38:22.631855', '2021-09-25 13:38:22.64319', NULL, 8, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010007', NULL, NULL, NULL);
-INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-21 20:00:58', '2021-09-26 13:59:52.410079', NULL, 3, 'nicktestname1', 1, '2021-09-22 00:00:00', '1231231231', '1231231231', 'email@test.com', 'http://101.34.137.128:9100/static/012a2d3ff58b4ba9b58f644804ccf938.png', '01', '010001', NULL, '阿大师法萨芬', '啊实打实地方');
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:13.518028', '2021-09-27 00:11:13.536745', NULL, 1, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, NULL, NULL, '02', '010001', NULL);
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:28.742603', '2021-09-27 00:11:28.754921', NULL, 2, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, NULL, NULL, '02', '010002', NULL);
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:32.159278', '2021-09-27 00:11:32.171863', NULL, 3, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, NULL, NULL, '02', '010003', NULL);
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:35.605392', '2021-09-27 00:11:35.61736', NULL, 4, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, NULL, NULL, '02', '010004', NULL);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."m_system_code_id_seq"
 OWNED BY "public"."m_system_code"."id";
-SELECT setval('"public"."m_system_code_id_seq"', 60, true);
+SELECT setval('"public"."m_system_code_id_seq"', 59, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."m_user_info_id_seq"
 OWNED BY "public"."m_user_info"."id";
-SELECT setval('"public"."m_user_info_id_seq"', 15, true);
+SELECT setval('"public"."m_user_info_id_seq"', 5, true);
 
 -- ----------------------------
 -- Primary Key structure for table alembic_version
@@ -340,7 +343,7 @@ ALTER TABLE "public"."m_system_code" ADD CONSTRAINT "m_system_code_pkey" PRIMARY
 -- ----------------------------
 -- Primary Key structure for table m_table_define
 -- ----------------------------
-ALTER TABLE "public"."m_table_define" ADD CONSTRAINT "m_table_define_pkey" PRIMARY KEY ("class_name", "tbl_code");
+ALTER TABLE "public"."m_table_define" ADD CONSTRAINT "m_table_define_pkey" PRIMARY KEY ("tbl_code", "field_code");
 
 -- ----------------------------
 -- Primary Key structure for table m_user
