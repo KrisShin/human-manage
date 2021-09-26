@@ -12,7 +12,7 @@
  Target Server Version : 130004
  File Encoding         : 65001
 
- Date: 27/09/2021 00:13:51
+ Date: 27/09/2021 00:42:13
 */
 
 
@@ -216,6 +216,17 @@ CREATE TABLE "public"."m_table_define" (
 -- ----------------------------
 -- Records of m_table_define
 -- ----------------------------
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:22:59.615672', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm', '用户名', 'DECIMAL', '5', 2, '1', '说明', '备注', NULL);
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:25:19.415989', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm1', '用户名1', 'DECIMAL', '5', 2, '1', '说明', '备注', NULL);
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:26:03.363814', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm2', '用户名2', 'DECIMAL', '5', 2, '1', '说明', '备注', NULL);
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:26:36.878737', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm3', '用户名3', 'DECIMAL', '5', 2, '1', '说明', '备注', NULL);
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:29:05.900317', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm4', '用户名4', 'DECIMAL', '5', 2, '1', '说明', '备注', NULL);
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:29:34.956959', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm5', '用户名5', 'DECIMAL', '5', 2, '1', '说明', '备注', NULL);
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:39:58.46814', NULL, 'demo_table', 'demo_code1', 'demo', 'user_nm5', '用户名5', 'DECIMAL', '5', 2, '1', '说明', '备注', '1');
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:40:49.049555', NULL, 'demo_table', 'demo_code1', 'demo', 'user_nm4', '用户名4', 'DECIMAL', '5', 2, '1', '说明', '备注', '1');
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:41:05.013437', NULL, 'demo_table', 'demo_code1', 'demo', 'user_nm3', '用户名3', 'DECIMAL', '5', 2, '1', '说明', '备注', '1');
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:41:27.63727', NULL, 'demo_table', 'demo_code2', 'demo', 'user_nm3', '用户名3', 'DECIMAL', '5', 2, '1', '说明', '备注', '1');
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:41:36.565933', NULL, 'demo_table', 'demo_code2', 'demo', 'user_nm1', '用户名1', 'DECIMAL', '5', 2, '1', '说明', '备注', '1');
 
 -- ----------------------------
 -- Table structure for m_user

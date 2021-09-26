@@ -15,6 +15,7 @@ from config import status_code
 from config.global_params import db
 from datetime import datetime
 import json
+from sqlalchemy import func, distinct
 
 apis = Blueprint('apis', __name__, url_prefix='/api')
 
@@ -297,15 +298,22 @@ def api_table_list():
     data = request.args
     page = int(data.get('page', 1))
     page_size = int(data.get('pageSize', 10))
-    a = db.session.execute("""
-    select tbl_code, tbl_name, class_name ,count(*) from m_table_define group by tbl_code,tbl_name,class_name order by create_time desc;
-    """)
-    total = db.session.f
-    table_list = 'a'
+    table_list = TableDefine.query.distinct(TableDefine.tbl_code)
+    total = table_list.count()
+    table_list = table_list.all()[(page - 1) * page_size : (page * page_size)]
+    resp = []
+    for row in table_list:
+        resp.append(
+            {
+                'tbl_code': row.tbl_code,
+                'tbl_name': row.tbl_name,
+                'class_name': row.class_name,
+            }
+        )
     return jsonify(
         {
             'code': status_code.OK,
-            'data': table_list,
+            'data': resp,
             "page": page,
             "pageSize": page_size,
             "total": total,
@@ -313,19 +321,15 @@ def api_table_list():
     )
 
 
-@apis.route('/table/field/', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@apis.route('/table/field/', methods=['POST', 'PUT', 'DELETE'])
 # @auth
 def api_table_oprations():
-    if request.method == 'GET':
-        data = request.args
-        tbl_code = data.get('tbl_code')
-        table = TableDefine.query.filter_by(tbl_code=tbl_code).first()
-        return jsonify({'code': status_code.OK, 'data': dict(table)})
-    elif request.method == 'POST':
+
+    if request.method == 'POST':
         table_obj = TableDefine()
         if not _assignment_table(table_obj, request, 'create'):
             return jsonify({'code': status_code.PARAMS_LACK, 'msg': '请确认参数是否完整'})
-        return jsonify({'code': status_code, 'data': dict(table_obj)})
+        return jsonify({'code': status_code.OK, 'data': dict(table_obj)})
     elif request.method == 'PUT':
         data = request.get_json()
         table_obj = TableDefine.query.filter_by(tbl_code=data.get('tbl_code')).first()
@@ -348,6 +352,7 @@ def _assignment_table(table_obj, request, mode='create'):
     field_code = data.get('field_code')
     field_name = data.get('field_name')
     type = data.get('type')
+    key = data.get('key')
     size = data.get('size')
     decimal = data.get('decimal')
     nullable = data.get('nullable')
@@ -372,7 +377,9 @@ def _assignment_table(table_obj, request, mode='create'):
     if size:
         table_obj.size = size
     if decimal:
-        table_obj.decimal = decimal
+        table_obj.decimal = int(decimal)
+    if key:
+        table_obj.key = key
     if nullable:
         table_obj.nullable = nullable
     if doc:
