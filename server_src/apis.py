@@ -62,7 +62,7 @@ def api_user_list():
     end_time = data.get('end_time')
 
     if name:
-        user_list = user_list.filter(User.name.like(f"%{name}%"))
+        user_list = user_list.filter(User.user_nm.like(f"%{name}%"))
     if role:
         sc_id = SystemCode.query.filter_by(
             code_kbn=role['code_kbn'], code_no=role['code_no']
