@@ -1,10 +1,10 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : WSL_postgresql
+ Source Server         : postgres_tencent_LY
  Source Server Type    : PostgreSQL
  Source Server Version : 130004
- Source Host           : 127.0.0.1:35432
+ Source Host           : 101.34.137.128:35432
  Source Catalog        : humanmanage
  Source Schema         : public
 
@@ -12,7 +12,7 @@
  Target Server Version : 130004
  File Encoding         : 65001
 
- Date: 25/09/2021 13:34:11
+ Date: 27/09/2021 00:02:36
 */
 
 
@@ -237,18 +237,16 @@ CREATE TABLE "public"."m_user" (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO "public"."m_user" VALUES ('010001', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
-', NULL, 6, NULL, NULL, '01', NULL, NULL, NULL, NULL, '2021-09-25 13:32:45.652056', NULL, NULL);
-INSERT INTO "public"."m_user" VALUES ('010002', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
-', NULL, 6, NULL, NULL, '01', NULL, NULL, NULL, NULL, '2021-09-25 13:32:57.261326', NULL, NULL);
-INSERT INTO "public"."m_user" VALUES ('010003', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
-', NULL, 6, NULL, NULL, '01', NULL, NULL, NULL, NULL, '2021-09-25 13:33:01.076013', NULL, NULL);
-INSERT INTO "public"."m_user" VALUES ('010004', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
-', NULL, 6, NULL, NULL, '01', NULL, NULL, NULL, NULL, '2021-09-25 13:33:04.632818', NULL, NULL);
-INSERT INTO "public"."m_user" VALUES ('010005', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
-', NULL, 6, NULL, NULL, '01', NULL, NULL, NULL, NULL, '2021-09-25 13:33:08.260647', NULL, NULL);
+INSERT INTO "public"."m_user" VALUES ('3121', '打算的', 'LBxZmYVrnG+Z+qC2xuTX/Q==
+', NULL, 5, 8, '010002', '01', 1, NULL, NULL, NULL, '2021-09-24 00:54:07.725914', NULL, '单方事故水电费');
+INSERT INTO "public"."m_user" VALUES ('312', '打算的', 'LBxZmYVrnG+Z+qC2xuTX/Q==
+', NULL, 5, 7, '020001', '02', 1, NULL, NULL, NULL, '2021-09-24 00:52:21.606996', '2021-09-25 00:11:46.807703', '放松放松白名单烦恼');
 INSERT INTO "public"."m_user" VALUES ('010006', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
-', NULL, 6, NULL, NULL, '01', NULL, NULL, NULL, NULL, '2021-09-25 13:33:12.11917', NULL, NULL);
+', NULL, 6, NULL, NULL, '01', 2, NULL, NULL, NULL, '2021-09-25 13:38:17.847828', NULL, NULL);
+INSERT INTO "public"."m_user" VALUES ('010007', 'testor', 'lqaPzBoF/oPBVbqYm2qfLA==
+', NULL, 6, NULL, NULL, '01', 1, NULL, NULL, NULL, '2021-09-25 13:38:22.62262', NULL, NULL);
+INSERT INTO "public"."m_user" VALUES ('010001', '测试1', 'LBxZmYVrnG+Z+qC2xuTX/Q==
+', NULL, 4, 8, '010001', '01', 1, NULL, NULL, NULL, NULL, '2021-09-26 13:59:52.33956', 'asdfaasdadasd');
 
 -- ----------------------------
 -- Table structure for m_user_info
@@ -280,26 +278,25 @@ CREATE TABLE "public"."m_user_info" (
 -- ----------------------------
 -- Records of m_user_info
 -- ----------------------------
-INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:32:45.676888', '2021-09-25 13:32:45.699138', NULL, 12, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010001', NULL, NULL, NULL);
-INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:32:57.271142', '2021-09-25 13:32:57.281751', NULL, 13, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010002', NULL, NULL, NULL);
-INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:33:01.089105', '2021-09-25 13:33:01.105994', NULL, 14, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010003', NULL, NULL, NULL);
-INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:33:04.641911', '2021-09-25 13:33:04.653943', NULL, 15, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010004', NULL, NULL, NULL);
-INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:33:08.271425', '2021-09-25 13:33:08.284858', NULL, 16, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010005', NULL, NULL, NULL);
-INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:33:12.128707', '2021-09-25 13:33:12.140976', NULL, 17, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010006', NULL, NULL, NULL);
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-24 00:54:07.734533', '2021-09-24 00:54:07.744952', NULL, 6, '阿萨德饭', 2, '2021-09-28 00:00:00', '5423445324', '5435', '·23412423', 'http://101.34.137.128:9100/static/9d453a73e52048da8cf61da3ff5601a6.jpg', '01', '3121', NULL, '任务分公司的', '大沙发上');
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-24 00:52:21.618547', '2021-09-25 00:11:46.811003', NULL, 5, 'DASD', 1, '2021-09-23 00:00:00', '4324', '423', '1414', 'http://101.34.137.128:9100/static/5f62199e7474491fba908e73396dab16.jpg', '01', '312', NULL, '发送到发斯蒂芬', 'SDASD ');
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:38:17.856969', '2021-09-25 13:38:17.869553', NULL, 7, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010006', NULL, NULL, NULL);
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-25 13:38:22.631855', '2021-09-25 13:38:22.64319', NULL, 8, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, '01', '010007', NULL, NULL, NULL);
+INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-21 20:00:58', '2021-09-26 13:59:52.410079', NULL, 3, 'nicktestname1', 1, '2021-09-22 00:00:00', '1231231231', '1231231231', 'email@test.com', 'http://101.34.137.128:9100/static/012a2d3ff58b4ba9b58f644804ccf938.png', '01', '010001', NULL, '阿大师法萨芬', '啊实打实地方');
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."m_system_code_id_seq"
 OWNED BY "public"."m_system_code"."id";
-SELECT setval('"public"."m_system_code_id_seq"', 59, true);
+SELECT setval('"public"."m_system_code_id_seq"', 60, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."m_user_info_id_seq"
 OWNED BY "public"."m_user_info"."id";
-SELECT setval('"public"."m_user_info_id_seq"', 18, true);
+SELECT setval('"public"."m_user_info_id_seq"', 15, true);
 
 -- ----------------------------
 -- Primary Key structure for table alembic_version

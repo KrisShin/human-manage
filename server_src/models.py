@@ -246,11 +246,11 @@ class UserInfo(BaseInfo):
     )  # 数据状态0 正常, 1 停用, 2 废弃
 
 
-class TableDefine(db.Model):
+class TableDefine(BaseInfo):
     __tablename__ = 'm_table_define'
 
-    class_name = db.Column(db.String(2), primary_key=True)
-    tbl_code = db.Column(db.String(20), primary_key=True)
+    class_name = db.Column(db.String(64))
+    tbl_code = db.Column(db.String(20))
     tbl_name = db.Column(db.String(20))
     field_code = db.Column(db.String(20))
     field_name = db.Column(db.String(20))
@@ -260,6 +260,9 @@ class TableDefine(db.Model):
     nullable = db.Column(db.String(1))
     doc = db.Column(db.String(256))
     comment = db.Column(db.String(1024))
+    key = db.Column(db.String(1))
+
+    __table_args__ = (db.PrimaryKeyConstraint('tbl_code', 'field_code'),)
 
     def keys(self):
         return (
@@ -269,6 +272,7 @@ class TableDefine(db.Model):
             'field_code',
             'field_name',
             'type',
+            'key',
             'size',
             'decimal',
             'nullable',

@@ -291,23 +291,30 @@ def api_factory_list():
     return jsonify({'code': status_code.OK, 'data': resp})
 
 
-@apis.route('/table/list/', methods=['GET'])
-@auth
+@apis.route('/table/list/', methods=['POST'])
+# @auth
 def api_table_list():
     data = request.args
     page = int(data.get('page', 1))
     page_size = int(data.get('pageSize', 10))
-    table_list = (
-        TableDefine.query.order_by(TableDefine.create_time.desc())
-        .paginate(page, page_size)
-        .items
+    a = db.session.execute("""
+    select tbl_code, tbl_name, class_name ,count(*) from m_table_define group by tbl_code,tbl_name,class_name order by create_time desc;
+    """)
+    total = db.session.f
+    table_list = 'a'
+    return jsonify(
+        {
+            'code': status_code.OK,
+            'data': table_list,
+            "page": page,
+            "pageSize": page_size,
+            "total": total,
+        }
     )
-    table_list = get_parse_response(table_list)
-    return jsonify({'code': status_code.OK, 'data': table_list})
 
 
-@apis.route('/table/', methods=['GET', 'POST', 'PUT', 'DELETE'])
-@auth
+@apis.route('/table/field/', methods=['GET', 'POST', 'PUT', 'DELETE'])
+# @auth
 def api_table_oprations():
     if request.method == 'GET':
         data = request.args
@@ -377,9 +384,3 @@ def _assignment_table(table_obj, request, mode='create'):
         db.session.add(table_obj)
     db.session.commit()
     return True
-
-
-@apis.route('/authcheck/', methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
-@auth
-def auth_check():
-    return jsonify({'code': status_code.OK, 'msg': '校验成功'})

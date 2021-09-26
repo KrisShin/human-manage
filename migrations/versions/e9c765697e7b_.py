@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 93bba9d1638a
+Revision ID: e9c765697e7b
 Revises: 
-Create Date: 2021-09-20 23:18:29.514384
+Create Date: 2021-09-26 23:58:20.728135
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '93bba9d1638a'
+revision = 'e9c765697e7b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -36,14 +36,18 @@ def upgrade():
     sa.Column('flug2_nm', sa.String(length=10), nullable=True),
     sa.Column('flug3', sa.String(length=1), nullable=True),
     sa.Column('flug3_nm', sa.String(length=100), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('code_kbn', 'code_no', name='unique_kbn_no')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('m_table_define',
-    sa.Column('class_name', sa.String(length=2), nullable=False),
+    sa.Column('update_user_id', sa.String(length=32), nullable=True),
+    sa.Column('update_count', sa.Integer(), nullable=True),
+    sa.Column('update_pgid', sa.String(length=512), nullable=True),
+    sa.Column('create_time', sa.DateTime(), nullable=True),
+    sa.Column('update_time', sa.DateTime(), nullable=True),
+    sa.Column('class_name', sa.String(length=64), nullable=True),
     sa.Column('tbl_code', sa.String(length=20), nullable=False),
     sa.Column('tbl_name', sa.String(length=20), nullable=True),
-    sa.Column('field_code', sa.String(length=20), nullable=True),
+    sa.Column('field_code', sa.String(length=20), nullable=False),
     sa.Column('field_name', sa.String(length=20), nullable=True),
     sa.Column('type', sa.String(length=20), nullable=True),
     sa.Column('size', sa.String(length=20), nullable=True),
@@ -51,7 +55,8 @@ def upgrade():
     sa.Column('nullable', sa.String(length=1), nullable=True),
     sa.Column('doc', sa.String(length=256), nullable=True),
     sa.Column('comment', sa.String(length=1024), nullable=True),
-    sa.PrimaryKeyConstraint('class_name', 'tbl_code')
+    sa.Column('key', sa.String(length=1), nullable=True),
+    sa.PrimaryKeyConstraint('tbl_code', 'field_code')
     )
     op.create_table('m_factory',
     sa.Column('update_user_id', sa.String(length=32), nullable=True),
@@ -83,15 +88,21 @@ def upgrade():
     )
     op.create_index(op.f('ix_m_department_factory_cd'), 'm_department', ['factory_cd'], unique=False)
     op.create_table('m_user',
+    sa.Column('update_user_id', sa.String(length=32), nullable=True),
+    sa.Column('update_count', sa.Integer(), nullable=True),
+    sa.Column('update_pgid', sa.String(length=512), nullable=True),
+    sa.Column('create_time', sa.DateTime(), nullable=True),
+    sa.Column('update_time', sa.DateTime(), nullable=True),
+    sa.Column('comment', sa.Text(), nullable=True),
     sa.Column('user_cd', sa.String(length=6), nullable=False),
     sa.Column('user_nm', sa.String(length=64), nullable=True),
     sa.Column('password', sa.String(length=512), nullable=True),
     sa.Column('create_user_id', sa.String(length=6), nullable=True),
     sa.Column('role_cd', sa.Integer(), nullable=True),
     sa.Column('duty_cd', sa.Integer(), nullable=True),
+    sa.Column('abort_div', sa.Integer(), nullable=True),
     sa.Column('dep_cd', sa.String(length=10), nullable=True),
     sa.Column('factory_cd', sa.String(length=2), nullable=True),
-    sa.Column('abort_div', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['abort_div'], ['m_system_code.id'], ),
     sa.ForeignKeyConstraint(['dep_cd'], ['m_department.dep_cd'], ),
     sa.ForeignKeyConstraint(['duty_cd'], ['m_system_code.id'], ),
@@ -113,8 +124,8 @@ def upgrade():
     sa.Column('phone', sa.String(length=12), nullable=False),
     sa.Column('telephone', sa.String(length=12), nullable=True),
     sa.Column('email', sa.String(length=128), nullable=True),
-    sa.Column('Address1', sa.String(length=256), nullable=True),
-    sa.Column('Address2', sa.String(length=256), nullable=True),
+    sa.Column('address1', sa.String(length=256), nullable=True),
+    sa.Column('address2', sa.String(length=256), nullable=True),
     sa.Column('photo', sa.String(length=1024), nullable=True),
     sa.Column('factory_cd', sa.String(length=2), nullable=True),
     sa.Column('user_cd', sa.String(length=6), nullable=True),
