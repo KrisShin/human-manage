@@ -155,6 +155,7 @@ def _assignment_user(user_obj, request, mode='create'):
     telephone = data.get('telephone')
     email = data.get('email')
     photo = data.get('photo')
+    abort_div = data.get('abort_div')
 
     if user_cd:
         user_obj.user_cd = user_cd
@@ -176,6 +177,14 @@ def _assignment_user(user_obj, request, mode='create'):
             code_kbn=duty_cd['code_kbn'], code_no=duty_cd['code_no']
         ).first()
         user_obj.duty_cd = sc.id
+    if abort_div:
+        sc = SystemCode.query.filter_by(
+            code_kbn=duty_cd['code_kbn'], code_no=duty_cd['code_no']
+        ).first()
+        user_obj.abort_div = sc.id
+    else:
+        user_obj.abort_div = 1
+
     if dep_cd:
         user_obj.dep_cd = dep_cd
     if comment:
