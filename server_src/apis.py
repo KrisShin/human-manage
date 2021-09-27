@@ -294,7 +294,7 @@ def api_factory_list():
 
 
 @apis.route('/table/list/', methods=['POST'])
-# @auth
+@auth
 def api_table_list():
     data = request.args
     page = int(data.get('page', 1))
@@ -323,9 +323,8 @@ def api_table_list():
 
 
 @apis.route('/table/field/', methods=['POST', 'PUT', 'DELETE'])
-# @auth
-def api_table_oprations():
-
+@auth
+def api_table_field_oprations():
     if request.method == 'POST':
         table_obj = TableDefine()
         if not _assignment_table(table_obj, request, 'create'):
@@ -338,11 +337,30 @@ def api_table_oprations():
         return jsonify({'code': status_code.OK, 'data': dict(table_obj)})
     elif request.method == 'DELETE':
         data = request.args
-        tbl_code = data.get('tbl_code')
-        table = TableDefine.query.filter(TableDefine.tbl_code.in_(tbl_code))
-        db.session.delete(table)
+        table_list = data.get('table_list')
+        if table_list:
+            table_code_list = []
+            for table in table_list:
+                table_code_list.append(table['tbl_code'])
+            db.session.commit()
+            table = TableDefine.query.filter(TableDefine.tbl_code.in_(table_code_list)).delete()
+            return jsonify({'code': status_code})
+        field_list = data.get('field_list')
+        for field in field_list:
+            table = TableDefine.query.filter_by(field_code=field['field_code'], tbl_code=field['tbl_code']).first().delete()
         db.session.commit()
         return jsonify({'code': status_code})
+
+
+@apis.route('/table/field/list/', methods=['POST'])
+@auth
+def api_table_field_list():
+    data = request.get_json()
+    code = data.get('tbl_code')
+    if not code:
+        return jsonify({'code': status_code.PARAMS_LACK, 'msg': '请确认参数是否完整'})
+    field_list = TableDefine.query.filter_by(tbl_code=code).all()
+    return jsonify({'code': status_code.OK, 'data': get_parse_response(field_list)})
 
 
 def _assignment_table(table_obj, request, mode='create'):
@@ -395,7 +413,7 @@ def _assignment_table(table_obj, request, mode='create'):
 
 
 @apis.route('/table/export/', methods=['POST'])
-# @auth
+@auth
 def api_table_export():
     data = request.get_json()
     table_code_list = data.get('table_code_list')
@@ -406,9 +424,7 @@ def api_table_export():
     for code in table_codes:
         field_dict[code] = TableDefine.query.filter_by(tbl_code=code).all()
     excel_name = generate_excel_file(field_dict)
-    response = make_response(
-        send_from_directory(STATIC_FOLDER, f'{excel_name}.xlsx')
-    )
+    response = make_response(send_from_directory(STATIC_FOLDER, f'{excel_name}.xlsx'))
     response.headers[
         "Content-Disposition"
     ] = "attachment; filename={0}; filename*=utf-8''{0}".format(
