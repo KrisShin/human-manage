@@ -44,7 +44,7 @@
 4. 退出postgresql, 导入表结构和数据
 
     ```bash
-    psql -U humanuser -d humanmanage < data.sql
+    psql -p 35432 -Uhumanuser -d humanmanage < public.sql
     ```
 
 ### 启动后台服务
