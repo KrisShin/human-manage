@@ -1,3 +1,4 @@
+from utils.export_table_define import generate_excel_file
 from config.settings import IMAGE_PREFIX, STATIC_FOLDER
 import os
 from server_src.wraps import auth, current_user_uid_role, generate_token
@@ -10,12 +11,12 @@ from server_src.models import (
     SystemCode,
     UserInfo,
 )
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, send_from_directory, make_response
 from config import status_code
 from config.global_params import db
 from datetime import datetime
 import json
-from sqlalchemy import func, distinct
+from urllib.parse import quote
 
 apis = Blueprint('apis', __name__, url_prefix='/api')
 
@@ -391,3 +392,26 @@ def _assignment_table(table_obj, request, mode='create'):
         db.session.add(table_obj)
     db.session.commit()
     return True
+
+
+@apis.route('/table/export/', methods=['POST'])
+# @auth
+def api_table_export():
+    data = request.get_json()
+    table_code_list = data.get('table_code_list')
+    if not table_code_list:
+        return jsonify({'code': status_code.PARAMS_LACK, 'msg': 'table_code_list'})
+    table_codes = set(table_code_list)
+    field_dict = {}
+    for code in table_codes:
+        field_dict[code] = TableDefine.query.filter_by(tbl_code=code).all()
+    excel_name = generate_excel_file(field_dict)
+    response = make_response(
+        send_from_directory(STATIC_FOLDER, f'{excel_name}.xlsx')
+    )
+    response.headers[
+        "Content-Disposition"
+    ] = "attachment; filename={0}; filename*=utf-8''{0}".format(
+        quote(f"{excel_name}.xlsx")
+    )
+    return response

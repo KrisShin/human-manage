@@ -35,7 +35,13 @@
     create database humanmanage with owner 'humanuser';
     ```
 
-3. 退出postgresql, 导入表结构和数据
+3. 授权database
+
+    ```sql
+    grant all on database humanmanage to humanuser;
+    ```
+
+4. 退出postgresql, 导入表结构和数据
 
     ```bash
     psql -U humanuser -d humanmanage < data.sql
