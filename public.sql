@@ -1,10 +1,10 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : WSL_postgresql
+ Source Server         : local_pg
  Source Server Type    : PostgreSQL
  Source Server Version : 130004
- Source Host           : 127.0.0.1:35432
+ Source Host           : localhost:35432
  Source Catalog        : humanmanage
  Source Schema         : public
 
@@ -12,7 +12,7 @@
  Target Server Version : 130004
  File Encoding         : 65001
 
- Date: 27/09/2021 00:42:13
+ Date: 27/09/2021 17:25:09
 */
 
 
@@ -26,6 +26,7 @@ MINVALUE  1
 MAXVALUE 2147483647
 START 1
 CACHE 1;
+ALTER SEQUENCE "public"."m_system_code_id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for m_user_info_id_seq
@@ -37,6 +38,7 @@ MINVALUE  1
 MAXVALUE 2147483647
 START 1
 CACHE 1;
+ALTER SEQUENCE "public"."m_user_info_id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Table structure for alembic_version
@@ -46,11 +48,14 @@ CREATE TABLE "public"."alembic_version" (
   "version_num" varchar(32) COLLATE "pg_catalog"."default" NOT NULL
 )
 ;
+ALTER TABLE "public"."alembic_version" OWNER TO "postgres";
 
 -- ----------------------------
 -- Records of alembic_version
 -- ----------------------------
+BEGIN;
 INSERT INTO "public"."alembic_version" VALUES ('96edc2109d3c');
+COMMIT;
 
 -- ----------------------------
 -- Table structure for m_department
@@ -69,13 +74,16 @@ CREATE TABLE "public"."m_department" (
   "abort_div" int4
 )
 ;
+ALTER TABLE "public"."m_department" OWNER TO "postgres";
 
 -- ----------------------------
 -- Records of m_department
 -- ----------------------------
+BEGIN;
 INSERT INTO "public"."m_department" VALUES (NULL, NULL, NULL, NULL, NULL, NULL, '010001', '人事部', '01', NULL);
 INSERT INTO "public"."m_department" VALUES (NULL, NULL, NULL, NULL, NULL, NULL, '010002', '销售部', '01', NULL);
 INSERT INTO "public"."m_department" VALUES (NULL, NULL, NULL, NULL, NULL, NULL, '020001', '财务部', '02', NULL);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for m_factory
@@ -93,12 +101,15 @@ CREATE TABLE "public"."m_factory" (
   "abort_div" int4
 )
 ;
+ALTER TABLE "public"."m_factory" OWNER TO "postgres";
 
 -- ----------------------------
 -- Records of m_factory
 -- ----------------------------
+BEGIN;
 INSERT INTO "public"."m_factory" VALUES (NULL, NULL, NULL, NULL, NULL, NULL, '01', '食品厂', NULL);
 INSERT INTO "public"."m_factory" VALUES (NULL, NULL, NULL, NULL, NULL, NULL, '02', '服装厂', NULL);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for m_system_code
@@ -125,10 +136,12 @@ CREATE TABLE "public"."m_system_code" (
   "factory_cd" varchar(2) COLLATE "pg_catalog"."default"
 )
 ;
+ALTER TABLE "public"."m_system_code" OWNER TO "postgres";
 
 -- ----------------------------
 -- Records of m_system_code
 -- ----------------------------
+BEGIN;
 INSERT INTO "public"."m_system_code" VALUES (NULL, NULL, NULL, NULL, NULL, NULL, 1, '00', '廃止区分', '0', '使用（初期値）', '1', '使用', NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "public"."m_system_code" VALUES (NULL, NULL, NULL, NULL, NULL, NULL, 2, '00', '廃止区分', '1', '停止', '1', '使用', NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "public"."m_system_code" VALUES (NULL, NULL, NULL, NULL, NULL, NULL, 3, '00', '廃止区分', '2', '廃止', '1', '使用', NULL, NULL, NULL, NULL, NULL);
@@ -187,6 +200,7 @@ INSERT INTO "public"."m_system_code" VALUES (NULL, NULL, NULL, NULL, NULL, NULL,
 INSERT INTO "public"."m_system_code" VALUES (NULL, NULL, NULL, NULL, NULL, NULL, 56, '18', '確定コード区分', '1', '確定', '1', '使用', NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "public"."m_system_code" VALUES (NULL, NULL, NULL, NULL, NULL, NULL, 57, '19', '加工計画有無区分', '0', '計画なし', '1', '使用', NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "public"."m_system_code" VALUES (NULL, NULL, NULL, NULL, NULL, NULL, 58, '19', '加工計画有無区分', '1', '計画あり', '1', '使用', NULL, NULL, NULL, NULL, NULL);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for m_table_define
@@ -212,21 +226,24 @@ CREATE TABLE "public"."m_table_define" (
   "key" varchar(1) COLLATE "pg_catalog"."default"
 )
 ;
+ALTER TABLE "public"."m_table_define" OWNER TO "postgres";
 
 -- ----------------------------
 -- Records of m_table_define
 -- ----------------------------
-INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:22:59.615672', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm', '用户名', 'DECIMAL', '5', 2, '1', '说明', '备注', NULL);
-INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:25:19.415989', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm1', '用户名1', 'DECIMAL', '5', 2, '1', '说明', '备注', NULL);
-INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:26:03.363814', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm2', '用户名2', 'DECIMAL', '5', 2, '1', '说明', '备注', NULL);
-INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:26:36.878737', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm3', '用户名3', 'DECIMAL', '5', 2, '1', '说明', '备注', NULL);
-INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:29:05.900317', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm4', '用户名4', 'DECIMAL', '5', 2, '1', '说明', '备注', NULL);
+BEGIN;
 INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:29:34.956959', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm5', '用户名5', 'DECIMAL', '5', 2, '1', '说明', '备注', NULL);
-INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:39:58.46814', NULL, 'demo_table', 'demo_code1', 'demo', 'user_nm5', '用户名5', 'DECIMAL', '5', 2, '1', '说明', '备注', '1');
-INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:40:49.049555', NULL, 'demo_table', 'demo_code1', 'demo', 'user_nm4', '用户名4', 'DECIMAL', '5', 2, '1', '说明', '备注', '1');
-INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:41:05.013437', NULL, 'demo_table', 'demo_code1', 'demo', 'user_nm3', '用户名3', 'DECIMAL', '5', 2, '1', '说明', '备注', '1');
-INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:41:27.63727', NULL, 'demo_table', 'demo_code2', 'demo', 'user_nm3', '用户名3', 'DECIMAL', '5', 2, '1', '说明', '备注', '1');
-INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:41:36.565933', NULL, 'demo_table', 'demo_code2', 'demo', 'user_nm1', '用户名1', 'DECIMAL', '5', 2, '1', '说明', '备注', '1');
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:39:58.46814', NULL, 'demo_table1', 'demo_code1', 'demo1', 'user_nm5', '用户名5', 'DECIMAL', '5', 2, '1', '说明', '备注', '1');
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:26:03.363814', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm2', '用户名2', 'DECIMAL', '5', 2, '0', '说明', '备注', NULL);
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:26:36.878737', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm3', '用户名3', 'DECIMAL', '5', 2, '0', '说明', '备注', NULL);
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:29:05.900317', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm4', '用户名4', 'DECIMAL', '5', 2, '0', '说明', '备注', NULL);
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:41:27.63727', NULL, 'demo_table2', 'demo_code2', 'demo2', 'user_nm3', '用户名3', 'DECIMAL', '5', 2, '0', '说明', '备注', '1');
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:40:49.049555', NULL, 'demo_table1', 'demo_code1', 'demo1', 'user_nm4', '用户名4', 'DECIMAL', '5', 2, '0', '说明', '备注', '');
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:41:05.013437', NULL, 'demo_table1', 'demo_code1', 'demo1', 'user_nm3', '用户名3', 'DECIMAL', '5', 2, '0', '说明', '备注', '');
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:41:36.565933', NULL, 'demo_table2', 'demo_code2', 'demo2', 'user_nm1', '用户名1', 'DECIMAL', '5', 2, '1', '说明', '备注', '');
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:22:59.615672', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm', '用户名', 'DECIMAL', '5', 2, '1', '说明', '备注', '1');
+INSERT INTO "public"."m_table_define" VALUES (NULL, NULL, NULL, '2021-09-27 00:25:19.415989', NULL, 'demo_table', 'demo_code', 'demo', 'user_nm1', '用户名1', 'DECIMAL', '5', 2, '1', '说明', '备注', '1');
+COMMIT;
 
 -- ----------------------------
 -- Table structure for m_user
@@ -250,10 +267,12 @@ CREATE TABLE "public"."m_user" (
   "factory_cd" varchar(2) COLLATE "pg_catalog"."default"
 )
 ;
+ALTER TABLE "public"."m_user" OWNER TO "postgres";
 
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
+BEGIN;
 INSERT INTO "public"."m_user" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:13.50034', NULL, NULL, '010001', 'testor', 'LBxZmYVrnG+Z+qC2xuTX/Q==
 ', NULL, 6, NULL, 1, NULL, '02');
 INSERT INTO "public"."m_user" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:28.732013', NULL, NULL, '010002', 'testor', 'LBxZmYVrnG+Z+qC2xuTX/Q==
@@ -262,6 +281,7 @@ INSERT INTO "public"."m_user" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:32.148
 ', NULL, 6, NULL, 1, NULL, '02');
 INSERT INTO "public"."m_user" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:35.595719', NULL, NULL, '010004', 'testor', 'LBxZmYVrnG+Z+qC2xuTX/Q==
 ', NULL, 6, NULL, 1, NULL, '02');
+COMMIT;
 
 -- ----------------------------
 -- Table structure for m_user_info
@@ -289,28 +309,31 @@ CREATE TABLE "public"."m_user_info" (
   "abort_div" int4
 )
 ;
+ALTER TABLE "public"."m_user_info" OWNER TO "postgres";
 
 -- ----------------------------
 -- Records of m_user_info
 -- ----------------------------
+BEGIN;
 INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:13.518028', '2021-09-27 00:11:13.536745', NULL, 1, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, NULL, NULL, '02', '010001', NULL);
 INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:28.742603', '2021-09-27 00:11:28.754921', NULL, 2, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, NULL, NULL, '02', '010002', NULL);
 INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:32.159278', '2021-09-27 00:11:32.171863', NULL, 3, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, NULL, NULL, '02', '010003', NULL);
 INSERT INTO "public"."m_user_info" VALUES (NULL, NULL, NULL, '2021-09-27 00:11:35.605392', '2021-09-27 00:11:35.61736', NULL, 4, 'nicktest', 1, '1999-01-02 00:00:00', '13654987365', NULL, NULL, NULL, NULL, NULL, '02', '010004', NULL);
+COMMIT;
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."m_system_code_id_seq"
 OWNED BY "public"."m_system_code"."id";
-SELECT setval('"public"."m_system_code_id_seq"', 59, true);
+SELECT setval('"public"."m_system_code_id_seq"', 60, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."m_user_info_id_seq"
 OWNED BY "public"."m_user_info"."id";
-SELECT setval('"public"."m_user_info_id_seq"', 5, true);
+SELECT setval('"public"."m_user_info_id_seq"', 6, true);
 
 -- ----------------------------
 -- Primary Key structure for table alembic_version
