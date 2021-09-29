@@ -299,7 +299,9 @@ def api_table_list():
     data = request.args
     page = int(data.get('page', 1))
     page_size = int(data.get('pageSize', 10))
-    table_list = TableDefine.query.distinct(TableDefine.tbl_code).order_by(TableDefine.tbl_code)
+    table_list = TableDefine.query.distinct(TableDefine.tbl_code).order_by(
+        TableDefine.tbl_code
+    )
     total = table_list.count()
     table_list = table_list.all()[(page - 1) * page_size : (page * page_size)]
     resp = []
@@ -327,13 +329,19 @@ def api_table_list():
 def api_table_field_oprations():
     if request.method == 'POST':
         table_obj = TableDefine()
-        if not _assignment_table(table_obj, request, 'create'):
+        resp = _assignment_table(table_obj, request, 'create')
+        if resp == 0:
             return jsonify({'code': status_code.PARAMS_LACK, 'msg': '请确认参数是否完整'})
+        elif resp == -1:
+            return jsonify({'code': status_code.FIELD_DUPLICATE, 'msg': 'field_code重复'})
+
         return jsonify({'code': status_code.OK, 'data': dict(table_obj)})
     elif request.method == 'PUT':
         data = request.get_json()
         table_obj = TableDefine.query.filter_by(tbl_code=data.get('tbl_code')).first()
-        _assignment_table(table_obj, request, 'edit')
+        resp = _assignment_table(table_obj, request, 'edit')
+        if resp == -1:
+            return jsonify({'code': status_code.FIELD_DUPLICATE, 'msg': 'field_code重复'})
         return jsonify({'code': status_code.OK, 'data': dict(table_obj)})
     elif request.method == 'DELETE':
         data = request.args
@@ -343,11 +351,19 @@ def api_table_field_oprations():
             for table in table_list:
                 table_code_list.append(table['tbl_code'])
             db.session.commit()
-            table = TableDefine.query.filter(TableDefine.tbl_code.in_(table_code_list)).delete()
+            table = TableDefine.query.filter(
+                TableDefine.tbl_code.in_(table_code_list)
+            ).delete()
             return jsonify({'code': status_code})
         field_list = data.get('field_list')
         for field in field_list:
-            table = TableDefine.query.filter_by(field_code=field['field_code'], tbl_code=field['tbl_code']).first().delete()
+            table = (
+                TableDefine.query.filter_by(
+                    field_code=field['field_code'], tbl_code=field['tbl_code']
+                )
+                .first()
+                .delete()
+            )
         db.session.commit()
         return jsonify({'code': status_code})
 
@@ -379,7 +395,7 @@ def _assignment_table(table_obj, request, mode='create'):
     comment = data.get('comment')
 
     if not all((class_name, tbl_code)):
-        return False
+        return 0
 
     if class_name:
         table_obj.class_name = class_name
@@ -388,6 +404,8 @@ def _assignment_table(table_obj, request, mode='create'):
     if tbl_name:
         table_obj.tbl_name = tbl_name
     if field_code:
+        if TableDefine.query.filter(tbl_code=tbl_code, field_code=field_code).first():
+            return -1
         table_obj.field_code = field_code
     if field_name:
         table_obj.field_name = field_name
@@ -408,8 +426,9 @@ def _assignment_table(table_obj, request, mode='create'):
 
     if mode == 'create':
         db.session.add(table_obj)
+
     db.session.commit()
-    return True
+    return 1
 
 
 @apis.route('/table/export/', methods=['POST'])
