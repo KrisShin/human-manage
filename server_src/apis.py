@@ -299,7 +299,7 @@ def api_table_list():
     data = request.args
     page = int(data.get('page', 1))
     page_size = int(data.get('pageSize', 10))
-    table_list = TableDefine.query.distinct(TableDefine.tbl_code).order_by(TableDefine.create_time.desc())
+    table_list = TableDefine.query.distinct(TableDefine.tbl_code).order_by(TableDefine.tbl_code)
     total = table_list.count()
     table_list = table_list.all()[(page - 1) * page_size : (page * page_size)]
     resp = []
