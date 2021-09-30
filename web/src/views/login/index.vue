@@ -1,154 +1,208 @@
 <!--
- * @Description: 
- * @Version: 
- * @Author: zhendong.wu
- * @Date: 2021-08-30 23:22:24
+ * @Descripttion: 
+ * @version: 
+ * @Date: 2021-04-20 11:06:21
  * @LastEditors: zhendong.wu
- * @LastEditTime: 2021-08-31 15:53:33
- * @FilePath: /0825/src/views/login/index.vue
+ * @LastEditTime: 2021-09-26 11:03:45
+ * @Author: huzhushan@126.com
+ * @HomePage: https://huzhushan.gitee.io/vue3-element-admin
+ * @Github: https://github.com/huzhushan/vue3-element-admin
+ * @Donate: https://huzhushan.gitee.io/vue3-element-admin/donate/
 -->
 <template>
-  <div class="login-wrapper">
-    <div class="logo">
-      <span class="left"></span>
-      <span class="right"></span>
-    </div>
-    <div class="title">
-      <p>Welome to IO</p>
-      <p>Please Sign-in to your account</p>
-    </div>
-    <el-form ref="form" :model="formData" hide-required-asterisk :rules="rules">
-      <el-form-item prop="email">
-        <el-input v-model="formData.email" type="email" placeholder="email"></el-input>
+  <div class="login">
+    <el-form class="form" :model="model" :rules="rules" ref="loginForm">
+      <h1 class="title">7ERP Admin</h1>
+      <el-form-item prop="user_cd">
+        <el-input
+          class="text"
+          v-model="model.user_cd"
+          prefix-icon="el-icon-user-solid"
+          clearable
+          :placeholder="t('I18n.UserPw')"
+        />
       </el-form-item>
       <el-form-item prop="password">
-        <el-input type="password" v-model="formData.password"></el-input>
+        <el-input
+          class="text"
+          v-model="model.password"
+          prefix-icon="el-icon-lock"
+          show-password
+          clearable
+          placeholder="密码"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          :loading="loading"
+          type="primary"
+          class="btn"
+          @click="submit"
+        >
+          {{ btnText }}
+        </el-button>
       </el-form-item>
     </el-form>
-    <div style="text-align: right">
-      <el-button type="primary" @click="handleLogin">Sign in</el-button>
-    </div>
+    <el-select v-model="lgSelect" @change="changeLg" style="width: 100px; margin-right: 20px">
+      <el-option
+        v-for="item in lgOption"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value">
+      </el-option>
+    </el-select>
   </div>
 </template>
 
 <script>
-import { login } from '@/api/user'
-import Admin from '@/views/admin/index'
-export default {
-  name: '',
-  props: {
-
-  },
-  components: {
-
-  },
-  data () {
-    return {
-      formData: {},
+import {
+  defineComponent,
+  getCurrentInstance,
+  reactive,
+  toRefs,
+  ref,
+  computed,
+} from 'vue'
+import { Login } from '@/api/login'
+import { useStore } from 'vuex'
+import { useRouter, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+export default defineComponent({
+  name: 'login',
+  setup() {
+    const { proxy: ctx } = getCurrentInstance() // 可以把ctx当成vue2中的this
+    const store = useStore()
+    const router = useRouter()
+    const route = useRoute()
+    const {t, locale} = useI18n()
+    const state = reactive({
+      lgSelect: 'zh',
+      lgOption: [
+        {
+          label: '简体中文',
+          value: 'zh'
+        },
+        {
+          label: 'English',
+          value: 'en'
+        },
+        {
+          label: 'japen',
+          value: 'ja'
+        }
+      ],
+      model: {
+        user_cd: '',
+        password: '',
+      },
       rules: {
-        email: [
-          {required: true, message: '请输入email', triggle: 'blur'}
+        userName: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
         ],
         password: [
-          {required: true, message: '请输入密码', triggle: 'blur'}
-        ]
-      }
-    }
-  },
-  watch: {
-    '$store.state.menuList' (list) {
-      // this.getMenuData(list)
-    }
-  },
-  computed: {
-
-  },
-  created () {
-    this.$store.dispatch('GET_MENULIST')
-  },
-  mounted () {
-
-  },
-  methods: {
-    handleLogin () {
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          const params = {...this.formData}
-          login(params)
-            .then(res => {
-              this.$store.commit('SET_USERINFO', res.data)
-              this.$message.success('登录成功')
-              this.$router.push({path: '/base/humanInfo'})
-            })
-        } else {
-          return false
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          {
+            min: 6,
+            max: 12,
+            message: '长度在 6 到 12 个字符',
+            trigger: 'blur',
+          },
+        ],
+      },
+      loading: false,
+      btnText: computed(() => (state.loading ? '登录中...' : t("I18n.LogIn"))),
+      loginForm: ref(null),
+      submit: () => {
+        if (state.loading) {
+          return
         }
-      })
-    },
-    getMenuData (asyncMne) {
-      asyncMne.forEach(item => {
-        item.children.forEach(ch => {
-          let routeItem = {}
-          routeItem = ({
-            path: ch.path.split('/')[2],
-            name: ch.title,
-            component: Admin,
-            meta: {
-              title: ch.title,
-              icon: 'menu-circle'
+        state.loginForm.validate(async valid => {
+          if (valid) {
+            state.loading = true
+            const { code, token, msg } = await Login(state.model)
+            if (+code === 200) {
+              ctx.$message.success({
+                message: '登录成功',
+                duration: 1000,
+              })
+
+              const targetPath = decodeURIComponent(route.query.redirect)
+              if (targetPath.startsWith('http')) {
+                // 如果是一个url地址
+                window.location.href = targetPath
+              } else if (targetPath.startsWith('/')) {
+                // 如果是内部路由地址
+                router.push(targetPath)
+              } else {
+                router.push('/')
+              }
+              store.commit('app/setToken', token)
+            } else {
+              ctx.$message.error(msg)
             }
-          })
-
-          if (item.title === '基础数据') {
-            this.$router.addRoute('Base', routeItem)
-          }
-
-          if (item.title === '业务数据') {
-            this.$router.addRoute('Data', routeItem)
+            state.loading = false
           }
         })
-      })
-    },
-  }
-}
+      },
+      changeLg (val) {
+        locale.value = val
+        store.commit('app/setLanguage', val)
+      },
+    })
+
+    return {
+      ...toRefs(state),
+      t
+    }
+  },
+})
 </script>
 
-<style scoped lang="scss">
-.login-wrapper {
-  position: absolute;
-  top: 30vh;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 400px;
-  background: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  .title {
-    text-align: center;
-    font-size: 18px;
-    color: #444;
-    font-weight: 500;
-    line-height: 24px;
-  }
-  .logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    position: relative;
-    margin: 0 150px 15px;
-    span {
+<style lang="scss" scoped>
+.login {
+  transition: transform 1s;
+  transform: scale(1);
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #2d3a4b;
+  .form {
+    width: 520px;
+    max-width: 100%;
+    padding: 0 24px;
+    box-sizing: border-box;
+    margin: 160px auto 0;
+    .title {
+      color: #fff;
+      text-align: center;
+      font-size: 24px;
+      margin: 0 0 24px;
+    }
+    .text {
+      font-size: 16px;
+      :deep(.el-input__inner) {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.1);
+        color: #fff;
+        height: 48px;
+        line-height: 48px;
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+    .btn {
       width: 100%;
-      height: 100%;
-      display: inline-block;
-      &.left {
-        background: #1d2bf1;
-        position: absolute;
-        left: -50%;
-      }
-      &.right {
-        background: #1bbff3;
-      }
+    }
+  }
+}
+.el-select {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  :deep {
+    .el-input__inner {
+      border: 0
     }
   }
 }

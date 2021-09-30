@@ -1,77 +1,37 @@
 /*
- * @Description: 
- * @Version: 
- * @Author: zhendong.wu
- * @Date: 2021-05-14 09:55:26
- * @LastEditors: zhendong.wu
- * @LastEditTime: 2021-09-01 10:29:17
- * @FilePath: /0825/src/store/index.js
+ *                   江城子 . 程序员之歌
+ *
+ *               十年生死两茫茫，写程序，到天亮。
+ *                   千行代码，Bug何处藏。
+ *               纵使上线又怎样，朝令改，夕断肠。
+ *
+ *               领导每天新想法，天天改，日日忙。
+ *                   相顾无言，惟有泪千行。
+ *               每晚灯火阑珊处，夜难寐，加班狂。
+ *
+ *
+ * @Descripttion:
+ * @version:
+ * @Date: 2021-04-20 11:06:21
+ * @LastEditors: huzhushan@126.com
+ * @LastEditTime: 2021-04-21 12:48:11
+ * @Author: huzhushan@126.com
+ * @HomePage: https://huzhushan.gitee.io/vue3-element-admin
+ * @Github: https://github.com/huzhushan/vue3-element-admin
+ * @Donate: https://huzhushan.gitee.io/vue3-element-admin/donate/
  */
-import Vue from 'vue'
-import Vuex from 'vuex'
-import { getMenuList } from '../api/menu'
-import persistedState from 'vuex-persistedstate'
 
-Vue.use(Vuex)
+import { createStore } from 'vuex'
+import getters from './getters'
 
-export default new Vuex.Store({
-  state: {
-    menuList: [],
-    userinfo: null,
-    sidebarHidden: false,
-    historyLink: []
-  },
-  mutations: {
-    SET_MENU_LIST (state, data) {
-      state.menuList = data
-    },
-    SET_USERINFO (state, data) {
-      state.userinfo = data
-    },
-    SET_SIDEBAR_IS_HIDDEN (state, data) {
-      state.sidebarHidden = data
-    },
-    SET_HISTORY_LINK (state, data) {
-      state.historyLink.push(data)
-    },
-    DEL_HISTORY_LINK (state, index) {
-      state.historyLink.splice(index, 1)
-    }
-  },
-  actions: {
-    GET_MENULIST ({commit}) {
-      getMenuList()
-        .then(res => {
-          commit('SET_MENU_LIST', res.data)
-        })
-    },
+const modulesFiles = import.meta.globEager('./modules/*.js')
+const modules = Object.entries(modulesFiles).reduce((modules, [path, mod]) => {
+  const moduleName = path.replace(/^\.\/modules\/(.*)\.\w+$/, '$1')
+  modules[moduleName] = mod.default
+  return modules
+}, {})
 
-    GET_AND_SET_HISTORY_LINK ({state, commit}, data) {
-      const history = [...state.historyLink]
-      const route = JSON.parse(data)
-      const hasNewLink = history.some(item => {
-        return item.path === route.path
-      })
-      if (!hasNewLink) {
-        commit('SET_HISTORY_LINK', route)
-      }
-    },
-
-    DEL_HISTORY_LINK ({state, commit}, data) {
-      const history = [...state.historyLink]
-      const route = JSON.parse(data)
-      let idx = -1
-      history.forEach((item, index) => {
-        if (item.path === data.path) {
-          idx = index
-        }
-      })
-      commit('DEL_HISTORY_LINK', idx)  
-    }
-  },
-  modules: {
-  },
-  plugins: [
-    persistedState()
-  ]
+export default createStore({
+  modules,
+  getters
 })

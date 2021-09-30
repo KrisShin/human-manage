@@ -1,33 +1,50 @@
 /*
  * @Description: 
- * @Version: 
  * @Author: zhendong.wu
- * @Date: 2021-05-14 09:55:26
+ * @Date: 2021-09-20 22:08:14
  * @LastEditors: zhendong.wu
- * @LastEditTime: 2021-08-30 09:56:29
- * @FilePath: /0825/src/main.js
+ * @LastEditTime: 2021-09-26 00:11:29
  */
-import Vue from 'vue'
+
+import { createApp } from 'vue'
 import App from './App.vue'
-import './registerServiceWorker'
+
+const app = createApp(App)
+
+// 引入element-plus
+import ElementPlus from 'element-plus'
+import './assets/style/element-variables.scss'
+// 引入中文语言包
+import 'dayjs/locale/zh-cn'
+import locale from 'element-plus/lib/locale/lang/zh-cn'
+import i18n from './assets/locale'
+// 引入路由
 import router from './router'
+
+// 引入store
 import store from './store'
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-import './assets/styles/index.scss'
-import './assets/icons'
 
-Vue.use(BootstrapVue)
-Vue.use(IconsPlugin)
-Vue.use(ElementUI)
+// 权限控制
+import './permission'
 
-Vue.config.productionTip = false
+// 引入svg图标注册脚本
+import 'vite-plugin-svg-icons/register'
 
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+// 注册全局组件
+import * as Components from './global-components'
+Object.entries(Components).forEach(([key, component]) => {
+  app.component(key, component)
+})
+
+// 错误日志
+import useErrorHandler from './error-log'
+useErrorHandler(app)
+
+app
+  .use(ElementPlus, {
+    i18n: i18n.global.t,
+  })
+  .use(i18n)
+  .use(store)
+  .use(router)
+  .mount('#app')

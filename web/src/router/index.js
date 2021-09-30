@@ -1,123 +1,66 @@
 /*
- * @Description: 
- * @Version: 
- * @Author: zhendong.wu
- * @Date: 2021-05-14 09:55:26
- * @LastEditors: zhendong.wu
- * @LastEditTime: 2021-08-31 15:53:10
- * @FilePath: /0825/src/router/index.js
+ *  ┌───┐   ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┐
+ *  │Esc│   │ F1│ F2│ F3│ F4│ │ F5│ F6│ F7│ F8│ │ F9│F10│F11│F12│ │P/S│S L│P/B│  ┌┐    ┌┐    ┌┐
+ *  └───┘   └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┘  └┘    └┘    └┘
+ *  ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───────┐ ┌───┬───┬───┐ ┌───┬───┬───┬───┐
+ *  │~ `│! 1│@ 2│# 3│$ 4│% 5│^ 6│& 7│* 8│( 9│) 0│_ -│+ =│ BacSp │ │Ins│Hom│PUp│ │N L│ / │ * │ - │
+ *  ├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─────┤ ├───┼───┼───┤ ├───┼───┼───┼───┤
+ *  │ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{ [│} ]│ | \ │ │Del│End│PDn│ │ 7 │ 8 │ 9 │   │
+ *  ├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤ └───┴───┴───┘ ├───┼───┼───┤ + │
+ *  │ Caps │ A │ S │ D │ F │ G │ H │ J │ K │ L │: ;│" '│ Enter  │               │ 4 │ 5 │ 6 │   │
+ *  ├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────────┤     ┌───┐     ├───┼───┼───┼───┤
+ *  │ Shift  │ Z │ X │ C │ V │ B │ N │ M │< ,│> .│? /│  Shift   │     │ ↑ │     │ 1 │ 2 │ 3 │   │
+ *  ├─────┬──┴─┬─┴──┬┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬────┤ ┌───┼───┼───┐ ├───┴───┼───┤ E││
+ *  │ Ctrl│    │Alt │         Space         │ Alt│    │    │Ctrl│ │ ← │ ↓ │ → │ │   0   │ . │←─┘│
+ *  └─────┴────┴────┴───────────────────────┴────┴────┴────┴────┘ └───┴───┴───┘ └───────┴───┴───┘
+ *
+ * @Descripttion:
+ * @version:
+ * @Date: 2021-04-20 11:06:21
+ * @LastEditors: huzhushan@126.com
+ * @LastEditTime: 2021-07-26 16:16:36
+ * @Author: huzhushan@126.com
+ * @HomePage: https://huzhushan.gitee.io/vue3-element-admin
+ * @Github: https://github.com/huzhushan/vue3-element-admin
+ * @Donate: https://huzhushan.gitee.io/vue3-element-admin/donate/
  */
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Layout from '@components/Layout/index'
-import store from '../store/index'
 
-Vue.use(VueRouter)
+import { createRouter, createWebHashHistory } from 'vue-router'
 
-const routes = [
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/base/humanInfo',
-    hidden: true
-  },
-  {
-    path: '/base',
-    component: Layout,
-    name: 'Base',
-    redirect: '/base/humanInfo',
-    meta: {
-      title: '基础数据',
-      icon: 'menu-edit'
+import base from './modules/base'
+import gongcheng from './modules/engineering'
+import project from './modules/project'
+import redirect from './modules/redirect'
+import error from './modules/error'
+import login from './modules/login'
+import lock from './modules/lock'
+
+/* 菜单栏的路由 */
+// 固定菜单
+export const fixedRoutes = [...base, ...gongcheng, ...project]
+// 动态菜单
+export const asyncRoutes = []
+
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes: [
+    {
+      path: '/',
+      redirect: '/base',
     },
-    children: [
-      {
-        path: 'humanInfo',
-        component: () => import('@/views/admin/index'),
-        name: 'HumanInfo',
-        meta: {
-          title: '人员信息',
-          icon: 'menu-circle'
-        }
-      },
-      {
-        path: 'companyInfo',
-        component: () => import('@/views/admin/index'),
-        name: 'companyInfo',
-        meta: {
-          title: '公司信息',
-          icon: 'menu-circle'
-        }
-      },
-      {
-        path: 'departmentInfo',
-        component: () => import('@/views/admin/index'),
-        name: 'departmentInfo',
-        meta: {
-          title: '部门信息',
-          icon: 'menu-circle'
-        }
-      }
-    ]
+    ...redirect, // 统一的重定向配置
+    ...login,
+    ...lock,
+    ...fixedRoutes,
+    ...error,
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { left: 0, top: 0 }
+    }
   },
-  {
-    path: '/data',
-    component: Layout,
-    name: 'Data',
-    redirect: '/data/other',
-    meta: {
-      title: '业务数据',
-      icon: 'menu-edit'
-    },
-    children: [
-      {
-        path: 'other',
-        component: () => import('@/views/admin/index'),
-        name: 'HumanInfo',
-        meta: {
-          title: '其他业务',
-          icon: 'menu-circle'
-        }
-      },
-      {
-        path: 'Internal',
-        component: () => import('@/views/admin/index'),
-        name: 'companyInfo',
-        meta: {
-          title: '社内业务',
-          icon: 'menu-circle'
-        }
-      },
-      {
-        path: 'external',
-        component: () => import('@/views/admin/index'),
-        name: 'departmentInfo',
-        meta: {
-          title: '社外业务',
-          icon: 'menu-circle'
-        }
-      }
-    ]
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    hidden: true,
-    component: () => import('@/views/login/index')
-  },
-  { path: '*', redirect: '/404', hidden: true }
-]
-
-const router = new VueRouter({
-  routes
 })
-
-router.beforeEach((to, from, next) => {
-  if (!store.state.userinfo && to.path !== '/login') {
-    next({ name: 'Login' })
-  } else {
-    next()
-  }
-}) 
 
 export default router
