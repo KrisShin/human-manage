@@ -387,7 +387,7 @@ def api_table_field_list():
     code = data.get('tbl_code')
     if not code:
         return jsonify({'code': status_code.PARAMS_LACK, 'msg': '请确认参数是否完整'})
-    field_list = TableDefine.query.filter_by(tbl_code=code).all()
+    field_list = TableDefine.query.filter_by(tbl_code=code).order_by(TableDefine.field_code).all()
     return jsonify({'code': status_code.OK, 'data': get_parse_response(field_list)})
 
 
