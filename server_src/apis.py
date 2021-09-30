@@ -350,7 +350,11 @@ def api_table_field_oprations():
         return jsonify({'code': status_code.OK, 'data': dict(table_obj)})
     elif request.method == 'PUT':
         data = request.get_json()
-        table_obj = TableDefine.query.filter_by(tbl_code=data.get('tbl_code')).first()
+        field_code = data.get('field_code')
+        tbl_code = data.get('tbl_code')
+        table_obj = TableDefine.query.filter_by(
+            tbl_code=tbl_code, field_code=field_code
+        ).first()
         resp = _assignment_table(table_obj, request, 'edit')
         if resp == -1:
             return jsonify({'code': status_code.FIELD_DUPLICATE, 'msg': 'field_code重复'})
