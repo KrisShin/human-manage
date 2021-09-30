@@ -261,7 +261,7 @@ def api_user_login():
 
     user_obj = User.query.filter_by(user_cd=user_cd).first()
     if not user_obj:
-        return jsonify({'code': status_code.USER_NOT_EXIST, 'msg': '该学生不存在'})
+        return jsonify({'code': status_code.USER_NOT_EXIST, 'msg': '该用户不存在'})
 
     if not check_password(user_obj.password, password):
         return jsonify({'code': status_code.USER_WRONG_PASSWORD, 'msg': '密码错误'})
@@ -344,7 +344,7 @@ def api_table_field_oprations():
             return jsonify({'code': status_code.FIELD_DUPLICATE, 'msg': 'field_code重复'})
         return jsonify({'code': status_code.OK, 'data': dict(table_obj)})
     elif request.method == 'DELETE':
-        data = request.args
+        data = request.get_json()
         table_list = data.get('table_list')
         if table_list:
             table_code_list = []
@@ -354,18 +354,18 @@ def api_table_field_oprations():
             table = TableDefine.query.filter(
                 TableDefine.tbl_code.in_(table_code_list)
             ).delete()
-            return jsonify({'code': status_code})
+            return jsonify({'code': status_code.OK})
         field_list = data.get('field_list')
         for field in field_list:
             table = (
                 TableDefine.query.filter_by(
                     field_code=field['field_code'], tbl_code=field['tbl_code']
                 )
-                .first()
+                .limit(1)
                 .delete()
             )
         db.session.commit()
-        return jsonify({'code': status_code})
+        return jsonify({'code': status_code.OK})
 
 
 @apis.route('/table/field/list/', methods=['POST'])
@@ -404,7 +404,9 @@ def _assignment_table(table_obj, request, mode='create'):
     if tbl_name:
         table_obj.tbl_name = tbl_name
     if field_code:
-        if TableDefine.query.filter(tbl_code=tbl_code, field_code=field_code).first():
+        if TableDefine.query.filter_by(
+            tbl_code=tbl_code, field_code=field_code
+        ).first():
             return -1
         table_obj.field_code = field_code
     if field_name:
