@@ -19,7 +19,7 @@ HOST_NAME = socket.gethostname()
 HOST_IP = socket.gethostbyname(HOST_NAME)
 
 if HOST_IP == '127.0.1.1':
-    HOST_IP = '101.34.137.128'
+    HOST_IP = '101.35.152.20'
 
 # HTTP_HOST = r'http://127.0.0.1:12005'
 HTTP_HOST = f'http://{HOST_IP}:9100'
