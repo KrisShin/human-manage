@@ -2,18 +2,7 @@ from config.global_params import db
 from datetime import datetime
 
 
-class BaseInfo(db.Model):
-    __abstract__ = True
-
-    update_user_id = db.Column(db.String(32))
-    update_count = db.Column(db.Integer)
-    update_pgid = db.Column(db.String(512))
-    create_time = db.Column(db.DateTime, default=datetime.now)
-    update_time = db.Column(db.DateTime, onupdate=datetime.now)
-    comment = db.Column(db.Text)
-
-
-class SystemCode(BaseInfo):
+class SystemCode(db.Model):
     __tablename__ = 'm_system_code'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -28,15 +17,22 @@ class SystemCode(BaseInfo):
     flug3 = db.Column(db.String(1))
     flug3_nm = db.Column(db.String(100))
 
-    factory_cd = db.Column(
-        db.String(2),
-        db.ForeignKey("m_factory.factory_cd"),
-        index=True,
-    )
+    # factory_cd = db.Column(
+    #     db.String(2),
+    #     db.ForeignKey("m_factory.factory_cd"),
+    #     index=True,
+    # )
 
     __table_args__ = (
-        db.UniqueConstraint("code_kbn", "code_no", "factory_cd", name="unique_kbn_no"),
+        db.UniqueConstraint("code_kbn", "code_no", name="unique_kbn_no"),
     )
+
+    update_user_id = db.Column(db.String(32))
+    update_count = db.Column(db.Integer)
+    update_pgid = db.Column(db.String(512))
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, onupdate=datetime.now)
+    comment = db.Column(db.Text)
 
     def keys(self):
         return ('code_kbn', 'code_kbn_nm', 'code_no', 'code_nm')
@@ -45,7 +41,7 @@ class SystemCode(BaseInfo):
         return getattr(self, item)
 
 
-class Factory(BaseInfo):
+class Factory(db.Model):
     __tablename__ = 'm_factory'
 
     factory_cd = db.Column(db.String(2), primary_key=True)
@@ -71,6 +67,12 @@ class Factory(BaseInfo):
         passive_deletes=True,
         lazy=True,
     )
+    update_user_id = db.Column(db.String(32))
+    update_count = db.Column(db.Integer)
+    update_pgid = db.Column(db.String(512))
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, onupdate=datetime.now)
+    comment = db.Column(db.Text)
 
     def keys(self):
         return ('factory_cd', 'factory_nm', 'abort_div')
@@ -82,7 +84,7 @@ class Factory(BaseInfo):
         return getattr(self, item)
 
 
-class Department(BaseInfo):
+class Department(db.Model):
     __tablename__ = 'm_department'
 
     dep_cd = db.Column(db.String(10), primary_key=True)
@@ -107,6 +109,13 @@ class Department(BaseInfo):
         lazy=True,
     )
 
+    update_user_id = db.Column(db.String(32))
+    update_count = db.Column(db.Integer)
+    update_pgid = db.Column(db.String(512))
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, onupdate=datetime.now)
+    comment = db.Column(db.Text)
+
     def keys(self):
         return ('dep_cd', 'dep_name', 'factory', 'abort_div')
 
@@ -119,7 +128,7 @@ class Department(BaseInfo):
         return getattr(self, item)
 
 
-class User(BaseInfo):
+class User(db.Model):
     __tablename__ = 'm_user'
 
     user_cd = db.Column(db.String(6), primary_key=True)
@@ -161,6 +170,13 @@ class User(BaseInfo):
         passive_deletes=True,
         lazy=True,
     )
+
+    update_user_id = db.Column(db.String(32))
+    update_count = db.Column(db.Integer)
+    update_pgid = db.Column(db.String(512))
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, onupdate=datetime.now)
+    comment = db.Column(db.Text)
 
     def keys(self):
         return (
@@ -214,7 +230,7 @@ class User(BaseInfo):
         return dict(res) if res else res
 
 
-class UserInfo(BaseInfo):
+class UserInfo(db.Model):
     __tablename__ = 'm_user_info'
 
     id = db.Column(db.Integer, primary_key=True, index=True)
@@ -245,8 +261,15 @@ class UserInfo(BaseInfo):
         db.ForeignKey("m_system_code.id"),
     )  # 数据状态0 正常, 1 停用, 2 废弃
 
+    update_user_id = db.Column(db.String(32))
+    update_count = db.Column(db.Integer)
+    update_pgid = db.Column(db.String(512))
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, onupdate=datetime.now)
+    comment = db.Column(db.Text)
 
-class TableDefine(BaseInfo):
+
+class TableDefine(db.Model):
     __tablename__ = 'm_table_define'
 
     class_name = db.Column(db.String(64))
@@ -261,6 +284,13 @@ class TableDefine(BaseInfo):
     doc = db.Column(db.String(256))
     comment = db.Column(db.String(1024))
     key = db.Column(db.String(1))
+
+    update_user_id = db.Column(db.String(32))
+    update_count = db.Column(db.Integer)
+    update_pgid = db.Column(db.String(512))
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, onupdate=datetime.now)
+    comment = db.Column(db.Text)
 
     __table_args__ = (db.PrimaryKeyConstraint('tbl_code', 'field_code'),)
 
@@ -282,24 +312,3 @@ class TableDefine(BaseInfo):
 
     def __getitem__(self, item):
         return getattr(self, item)
-
-
-# class Calendar(BaseInfo):
-#     __tablename__ = 'm_calendar'
-
-#     calendar_date = db.Column(db.String(8), primary_key=True)
-#     Seq_No = db.Column(db.Integer, primary_key=True)
-#     holiday_flg = db.Column(db.Integer, index=True)  # 0:工作日，1休息日
-#     holiday_nm = db.Column(db.String(10))
-#     event_cd = db.Column(db.Integer, index=True)  # 0: ALL 1: 作業者  2: 設備　3:その他
-#     event_nm = db.Column(db.String(20))
-#     event_time1 = db.Column(db.String(4), nullable=False)
-#     event_time2 = db.Column(db.String(4), nullable=False)
-#     month_end_flg = db.Column(db.String(1))
-#     sche_flg = db.Column(db.String(1))
-
-#     factory_cd = db.Column(
-#         db.String(2),
-#         db.ForeignKey("m_factory.factory_cd", ondelete="CASCADE"),
-#         index=True,
-#     )
